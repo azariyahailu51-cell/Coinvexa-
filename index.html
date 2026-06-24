@@ -551,7 +551,12 @@ function showPage(id){
   if(chatListener&&id!=='orderPage'){chatListener();chatListener=null;}
   window.scrollTo(0,0);
 }
-function navigateTo(p){showPage(p);}
+function navigateTo(p){
+  if(!currentUser) return;
+  document.getElementById('appContent').classList.remove('hidden');
+  document.getElementById('authPages').classList.add('hidden');
+  showPage(p);
+}
 function toggleTheme(){isDark=!isDark;document.documentElement.setAttribute('data-theme',isDark?'dark':'light');document.getElementById('themeToggle').textContent=isDark?'🌙':'☀️';document.getElementById('themeIcon').textContent=isDark?'🌙':'☀️';document.getElementById('themeSub').textContent=isDark?'Dark':'Light';localStorage.setItem('cvTheme',isDark?'dark':'light');}
 if(localStorage.getItem('cvTheme')==='light'){isDark=false;document.documentElement.setAttribute('data-theme','light');}
 function showAuthError(id,msg){const e=document.getElementById(id);e.textContent=msg;e.classList.add('visible');}
