@@ -864,9 +864,24 @@ function openOrderChat(orderDocId,role,offerData,amount,total){
   document.getElementById('orderPayment').textContent=(offerData?.paymentMethods||[]).join(', ')||'—';
   document.getElementById('orderStatus').textContent='Pending';document.getElementById('orderStatus').className='order-status pending';
   document.getElementById('escrowTitle').textContent=amount+' '+(offerData?.coin||'')+' held in escrow';
-  document.getElementById('escrowSub').textContent=role==='buyer'?'Released once you confirm payment and seller approves.':'Release funds after confirming payment received.';
-  if(role==='buyer'){document.getElementById('countdownBox').classList.remove('hidden');startCountdown();document.getElementById('buyerActionsBar').classList.remove('hidden');document.getElementById('sellerActionsBar').classList.add('hidden');if(offerData?.instructions){document.getElementById('paymentInstructionsBox').classList.remove('hidden');document.getElementById('paymentInstructionsText').textContent=offerData.instructions;}else{document.getElementById('paymentInstructionsBox').classList.add('hidden');}}
-  else{document.getElementById('countdownBox').classList.add('hidden');document.getElementById('sellerActionsBar').classList.remove('hidden');document.getElementById('buyerActionsBar').classList.add('hidden');document.getElementById('paymentInstructionsBox').classList.add('hidden');}
+  document.getElementById('escrowTitle').textContent=role==='buyer'?'Funds secured in escrow — will be released after you pay':'Funds secured in escrow — release after payment confirmed';
+  if(role==='buyer'){
+    document.getElementById('countdownBox').classList.remove('hidden');
+    startCountdown();
+    document.getElementById('buyerActionsBar').classList.remove('hidden');
+    document.getElementById('sellerActionsBar').classList.add('hidden');
+    if(offerData?.instructions){
+      document.getElementById('paymentInstructionsBox').style.display='block';
+      document.getElementById('paymentInstructionsText').textContent=offerData.instructions;
+    } else {
+      document.getElementById('paymentInstructionsBox').style.display='none';
+    }
+  } else {
+    document.getElementById('countdownBox').classList.add('hidden');
+    document.getElementById('sellerActionsBar').classList.remove('hidden');
+    document.getElementById('buyerActionsBar').classList.add('hidden');
+    document.getElementById('paymentInstructionsBox').style.display='none';
+  }
   showPage('orderPage');subscribeToChat(orderDocId);
 }
 let countdownInterval;
