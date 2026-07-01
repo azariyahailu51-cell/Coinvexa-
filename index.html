@@ -3,202 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>CoinVexa — Dashboard</title>
+<title>CoinVexa - Dashboard</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root{ --bg:#0d1117; --panel:#161b22; --panel-2:#1f2630; --line:#2b3340; --ink:#e6edf3; --ink-dim:#7d8b9c; --green:#1ec98b; --red:#ef5d5d; --accent:#3b82f6; --gold:#f0b90b; --mono:'SF Mono','Roboto Mono',monospace; --shadow:0 2px 12px rgba(0,0,0,.3); }
-  [data-theme="light"]{ --bg:#f0f2f5; --panel:#ffffff; --panel-2:#f5f7fa; --line:#e1e4e8; --ink:#1a1a2e; --ink-dim:#6b7280; --green:#059669; --red:#dc2626; --accent:#2563eb; --gold:#d97706; --shadow:0 2px 12px rgba(0,0,0,.1); }
-  body{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; transition:background .2s,color .2s; }
-  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:var(--panel); border-bottom:1px solid var(--line); }
-  .brand{ font-size:18px; font-weight:800; letter-spacing:-.02em; }
-  .brand span{ color:var(--accent); }
-  .topbar-icons{ display:flex; gap:14px; font-size:18px; color:var(--ink-dim); align-items:center; }
-  .user-email{ font-size:11px; color:var(--ink-dim); margin-top:2px; }
-  .content{ padding-bottom:80px; }
-  .assets-hero{ padding:18px 16px; background:linear-gradient(180deg,var(--panel) 0%,var(--bg) 100%); }
-  .assets-hero .label{ font-size:12px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
-  .assets-hero .total{ font-size:32px; font-weight:800; font-family:var(--mono); }
-  .assets-hero .total small{ font-size:16px; color:var(--ink-dim); font-weight:600; }
-  .assets-hero .sub{ font-size:13px; color:var(--ink-dim); margin-top:4px; }
-  .price-update{ font-size:10px; color:var(--ink-dim); margin-top:2px; }
-  .action-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:14px 16px 4px; }
-  .action-btn{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 6px; text-align:center; font-size:11px; font-weight:600; color:var(--ink); cursor:pointer; }
-  .action-btn .icon{ font-size:18px; display:block; margin-bottom:4px; }
-  .section-title{ display:flex; justify-content:space-between; align-items:center; padding:18px 16px 8px; font-size:14px; font-weight:700; }
-  .section-title .more{ font-size:12px; color:var(--ink-dim); font-weight:500; cursor:pointer; }
-  .asset-list{ padding:0 16px; }
-  .asset-row{ display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); }
-  .asset-row:last-child{ border-bottom:none; }
-  .coin-icon{ width:36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; }
-  .coin-icon.usdt{ background:#1a4d3d; color:#1ec98b; }
-  .coin-icon.btc{ background:#3a2c10; color:#f0b90b; }
-  .coin-icon.eth{ background:#1c2840; color:#7fa8ff; }
-  .coin-icon.sol{ background:#1a2a3a; color:#9945FF; }
-  .coin-icon.trx{ background:#2c1a3a; color:#c98bf0; }
-  .asset-info{ flex:1; min-width:0; }
-  .asset-info .name{ font-weight:700; font-size:14px; }
-  .asset-info .full{ font-size:11px; color:var(--ink-dim); }
-  .asset-values{ text-align:right; }
-  .asset-values .amt{ font-family:var(--mono); font-weight:700; font-size:14px; }
-  .asset-values .usd{ font-size:11px; color:var(--ink-dim); }
-  /* P2P */
-  .p2p-tabs{ display:flex; gap:8px; padding:14px 16px 0; }
-  .p2p-tab{ flex:1; text-align:center; padding:10px; border-radius:10px; font-size:13px; font-weight:700; background:var(--panel); border:1px solid var(--line); color:var(--ink-dim); cursor:pointer; }
-  .p2p-tab.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
-  .p2p-top-row{ display:flex; align-items:center; justify-content:space-between; padding:10px 16px 0; }
-  .p2p-filter{ display:flex; gap:8px; padding:10px 16px; overflow-x:auto; }
-  .filter-chip{ flex-shrink:0; font-size:12px; padding:6px 12px; border-radius:20px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink-dim); font-weight:600; cursor:pointer; }
-  .filter-chip.active{ background:rgba(59,130,246,.15); border-color:var(--accent); color:var(--accent); }
-  .currency-filter{ display:flex; gap:8px; padding:0 16px 10px; overflow-x:auto; }
-  .p2p-offer{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 16px 10px; box-shadow:var(--shadow); }
-  .p2p-offer .merchant-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .avatar{ width:30px; height:30px; border-radius:50%; background:var(--panel-2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--accent); }
-  .merchant-name{ font-weight:700; font-size:13px; }
-  .merchant-meta{ font-size:11px; color:var(--ink-dim); }
-  .verified-badge{ font-size:9px; background:rgba(30,201,139,.15); color:var(--green); border-radius:5px; padding:2px 5px; font-weight:700; margin-left:4px; }
-  .my-offer-badge{ font-size:9px; background:rgba(59,130,246,.15); color:var(--accent); border-radius:5px; padding:2px 5px; font-weight:700; margin-left:4px; }
-  .p2p-price{ font-size:22px; font-weight:800; font-family:var(--mono); color:var(--green); margin:8px 0 2px; }
-  .p2p-price.sell{ color:var(--red); }
-  .p2p-details{ display:flex; justify-content:space-between; font-size:12px; color:var(--ink-dim); margin-bottom:10px; }
-  .p2p-details b{ color:var(--ink); }
-  .pay-methods{ display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
-  .pay-chip{ font-size:10px; padding:3px 8px; border-radius:6px; background:var(--panel-2); color:var(--ink-dim); border:1px solid var(--line); }
-  .offer-btn{ width:100%; padding:11px; border-radius:10px; border:none; font-weight:700; font-size:13px; cursor:pointer; }
-  .offer-btn.buy{ background:var(--green); color:#06241a; }
-  .offer-btn.sell{ background:var(--red); color:#fff; }
-  .offer-btn.my-offer{ background:var(--panel-2); color:var(--ink-dim); border:1px solid var(--line); }
-  /* Create offer */
-  .create-offer-btn{ background:var(--accent); color:#fff; border:none; border-radius:10px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer; }
-  /* Bottom nav */
-  .bottom-nav{ position:fixed; bottom:0; left:0; right:0; background:var(--panel); border-top:1px solid var(--line); display:flex; padding:6px 8px; z-index:5; }
-  .nav-btn{ flex:1; text-align:center; padding:8px 4px; border-radius:10px; font-size:11px; color:var(--ink-dim); font-weight:600; cursor:pointer; }
-  .nav-btn.active{ color:var(--accent); background:var(--panel-2); }
-  .nav-icon{ font-size:18px; display:block; margin-bottom:3px; }
-  .hidden{ display:none !important; }
-  .subheader{ display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--panel); border-bottom:1px solid var(--line); }
-  .back-btn{ width:32px; height:32px; border-radius:50%; background:var(--panel-2); display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--ink); cursor:pointer; flex-shrink:0; }
-  .subheader .title{ font-size:16px; font-weight:700; flex:1; }
-  /* Order / Chat */
-  .order-summary{ background:var(--panel); border-bottom:1px solid var(--line); padding:16px; }
-  .order-summary .top-row{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
-  .order-summary .amount{ font-size:24px; font-weight:800; font-family:var(--mono); }
-  .order-status{ font-size:11px; font-weight:700; padding:4px 10px; border-radius:8px; text-transform:uppercase; }
-  .order-status.pending{ background:rgba(240,185,11,.15); color:var(--gold); }
-  .order-status.paid{ background:rgba(59,130,246,.15); color:var(--accent); }
-  .order-status.completed{ background:rgba(30,201,139,.15); color:var(--green); }
-  .order-status.cancelled{ background:rgba(239,93,93,.15); color:var(--red); }
-  .order-status.disputed{ background:rgba(239,93,93,.15); color:var(--red); }
-  .order-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
-  .order-field .label{ font-size:11px; color:var(--ink-dim); margin-bottom:2px; }
-  .order-field .val{ font-size:13px; font-weight:600; word-break:break-all; }
-  .countdown{ background:rgba(240,185,11,.1); border:1px solid rgba(240,185,11,.3); border-radius:10px; padding:10px 14px; margin:12px 16px; font-size:12px; color:var(--gold); display:flex; justify-content:space-between; }
-  .countdown b{ font-family:var(--mono); font-size:14px; }
-  /* Chat */
-  .chat-area{ padding:12px 16px; display:flex; flex-direction:column; gap:10px; min-height:200px; }
-  .msg{ max-width:78%; padding:10px 12px; border-radius:12px; font-size:13px; line-height:1.4; }
-  .msg.them{ background:var(--panel-2); align-self:flex-start; border-bottom-left-radius:4px; }
-  .msg.me{ background:var(--accent); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
-  .msg.system{ align-self:center; background:transparent; color:var(--ink-dim); font-size:11px; text-align:center; max-width:100%; }
-  .msg-time{ font-size:10px; opacity:.6; margin-top:4px; }
-  .msg-sender{ font-size:10px; opacity:.7; margin-bottom:2px; font-weight:600; }
-  .order-actions{ position:fixed; bottom:0; left:0; right:0; background:var(--panel); border-top:1px solid var(--line); padding:12px 16px; display:flex; gap:10px; z-index:5; }
-  .order-actions button{ flex:1; padding:13px; border-radius:10px; border:none; font-weight:700; font-size:13px; cursor:pointer; }
-  .btn-confirm{ background:var(--green); color:#06241a; }
-  .btn-release{ background:var(--green); color:#06241a; }
-  .btn-cancel{ background:var(--panel-2); color:var(--ink-dim); border:1px solid var(--line); }
-  .btn-dispute{ background:rgba(239,93,93,.15); color:var(--red); border:1px solid rgba(239,93,93,.3); }
-  .chat-input-row{ position:fixed; bottom:0; left:0; right:0; background:var(--panel); border-top:1px solid var(--line); padding:10px 16px; display:flex; gap:10px; z-index:5; }
-  .chat-input-row input{ flex:1; background:var(--panel-2); border:1px solid var(--line); border-radius:20px; padding:10px 16px; color:var(--ink); font-size:13px; }
-  .chat-send{ width:40px; height:40px; border-radius:50%; background:var(--accent); border:none; color:#fff; font-size:16px; cursor:pointer; flex-shrink:0; }
-  /* History */
-  .history-item{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 16px 10px; box-shadow:var(--shadow); }
-  .history-item .top-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-  .history-item .type{ font-weight:700; font-size:14px; }
-  .history-item .meta{ font-size:11px; color:var(--ink-dim); }
-  .history-item .amt{ font-family:var(--mono); font-weight:700; font-size:15px; }
-  .history-item .amt.pos{ color:var(--green); }
-  .history-item .amt.neg{ color:var(--red); }
-  .status-badge{ display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px; margin-top:4px; }
-  .status-badge.pending{ background:rgba(240,185,11,.15); color:var(--gold); }
-  .status-badge.completed{ background:rgba(30,201,139,.15); color:var(--green); }
-  .status-badge.rejected{ background:rgba(239,93,93,.15); color:var(--red); }
-  /* Forms */
-  .form-card{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; margin:14px 16px; box-shadow:var(--shadow); }
-  .field-label{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-dim); margin-bottom:6px; display:block; }
-  .input{ width:100%; padding:13px 14px; margin-bottom:14px; border-radius:10px; border:1px solid var(--line); background:var(--panel-2); color:var(--ink); font-size:15px; }
-  .input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
-  select.input{ appearance:none; }
-  .network-select{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
-  .network-opt{ flex:1; min-width:60px; text-align:center; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--panel-2); font-size:12px; font-weight:700; color:var(--ink-dim); cursor:pointer; }
-  .network-opt.active{ border-color:var(--accent); color:var(--accent); background:rgba(59,130,246,.1); }
-  .fee-row{ display:flex; justify-content:space-between; font-size:12px; color:var(--ink-dim); padding:8px 0; border-top:1px solid var(--line); margin-top:4px; }
-  .max-link{ color:var(--accent); font-size:11px; font-weight:700; cursor:pointer; }
-  .balance-hint{ font-size:11px; color:var(--ink-dim); margin:-10px 0 14px; }
-  .btn-primary-full{ width:100%; padding:14px; border-radius:10px; border:none; background:var(--accent); color:#fff; font-weight:700; font-size:14px; cursor:pointer; margin-top:4px; }
-  .btn-danger-full{ width:100%; padding:14px; border-radius:10px; border:1px solid rgba(239,93,93,.3); background:rgba(239,93,93,.15); color:var(--red); font-weight:700; font-size:14px; cursor:pointer; margin-top:8px; }
-  .page{ padding-bottom:90px; }
-  /* Deposit */
-  .qr-box{ display:flex; justify-content:center; padding:16px 0; }
-  .addr-box{ background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-family:var(--mono); font-size:12px; word-break:break-all; display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; }
-  .shield-note{ display:flex; align-items:flex-start; gap:10px; margin:14px 16px; background:rgba(30,201,139,.08); border:1px solid rgba(30,201,139,.25); border-radius:12px; padding:12px 14px; font-size:12px; color:var(--ink-dim); line-height:1.5; }
-  .warning-note{ display:flex; align-items:flex-start; gap:10px; margin:14px 16px; background:rgba(240,185,11,.08); border:1px solid rgba(240,185,11,.25); border-radius:12px; padding:12px 14px; font-size:12px; color:var(--ink-dim); line-height:1.5; }
-  .menu-list{ padding:0 16px; margin-bottom:6px; }
-  .menu-item{ display:flex; align-items:center; gap:12px; padding:14px; background:var(--panel); border:1px solid var(--line); border-radius:14px; margin-bottom:10px; cursor:pointer; box-shadow:var(--shadow); }
-  .menu-icon{ width:40px; height:40px; border-radius:50%; background:var(--panel-2); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-  .menu-text{ flex:1; min-width:0; }
-  .menu-title{ font-weight:700; font-size:14px; }
-  .menu-sub{ font-size:11px; color:var(--ink-dim); margin-top:2px; }
-  .menu-chevron{ font-size:20px; color:var(--ink-dim); flex-shrink:0; }
-  .tx-hash-box{ background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-family:var(--mono); font-size:11px; word-break:break-all; margin-bottom:8px; color:var(--ink-dim); }
-  /* Markets */
-  .market-row{ display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--panel); }
-  .market-info{ flex:1; }
-  .market-info .name{ font-weight:700; font-size:14px; }
-  .market-info .sym{ font-size:11px; color:var(--ink-dim); }
-  .market-price{ text-align:right; }
-  .market-price .price{ font-family:var(--mono); font-weight:700; font-size:14px; }
-  .change.pos{ color:var(--green); font-size:11px; font-weight:600; }
-  .change.neg{ color:var(--red); font-size:11px; font-weight:600; }
-  /* Profile */
-  .profile-header{ padding:24px 16px 16px; text-align:center; }
-  .profile-avatar{ width:64px; height:64px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:#fff; margin:0 auto 10px; }
-  .profile-name{ font-size:18px; font-weight:800; }
-  .profile-email-text{ font-size:13px; color:var(--ink-dim); margin-top:2px; }
-  .kyc-badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; margin-top:8px; }
-  .kyc-badge.unverified{ background:rgba(240,185,11,.15); color:var(--gold); }
-  .kyc-badge.pending{ background:rgba(59,130,246,.15); color:var(--accent); }
-  .kyc-badge.verified{ background:rgba(30,201,139,.15); color:var(--green); }
-  .profile-menu{ padding:0 16px; }
-  .profile-menu-item{ display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--panel); border:1px solid var(--line); border-radius:14px; margin-bottom:10px; cursor:pointer; box-shadow:var(--shadow); }
-  .profile-menu-item .left{ display:flex; align-items:center; gap:12px; }
-  .profile-menu-item .icon{ font-size:20px; }
-  .profile-menu-item .label{ font-weight:600; font-size:14px; }
-  .profile-menu-item .sub{ font-size:11px; color:var(--ink-dim); }
-  .theme-toggle{ background:var(--panel-2); border:1px solid var(--line); border-radius:20px; padding:4px 10px; font-size:14px; cursor:pointer; color:var(--ink); }
-  .verify-banner{ background:rgba(240,185,11,.1); border-bottom:1px solid rgba(240,185,11,.3); padding:10px 16px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--gold); }
-  .verify-banner button{ background:var(--gold); color:#000; border:none; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer; }
-  .empty-history{ text-align:center; padding:40px 16px; color:var(--ink-dim); font-size:13px; }
-  /* My P2P Offers */
-  .my-offer-item{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 16px 10px; }
-  .my-offer-item .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  .offer-type-badge{ font-size:11px; font-weight:700; padding:3px 10px; border-radius:6px; }
-  .offer-type-badge.buy{ background:rgba(30,201,139,.15); color:var(--green); }
-  .offer-type-badge.sell{ background:rgba(239,93,93,.15); color:var(--red); }
-  .active-badge{ font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px; background:rgba(30,201,139,.15); color:var(--green); }
-  .inactive-badge{ font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px; background:rgba(239,93,93,.15); color:var(--red); }
-  .escrow-box{ margin:0 16px 12px; border-radius:14px; border:1px solid rgba(240,185,11,.3); background:rgba(240,185,11,.06); padding:14px; }
-  .escrow-row{ display:flex; gap:10px; align-items:flex-start; }
-  .escrow-icon{ font-size:20px; flex-shrink:0; }
-  .escrow-title{ font-weight:700; font-size:13px; color:var(--gold); }
-  .escrow-sub{ font-size:12px; color:var(--ink-dim); margin-top:3px; line-height:1.4; }
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0d1117;--panel:#161b22;--panel-2:#1f2630;--line:#2b3340;--ink:#e6edf3;--ink-dim:#7d8b9c;--green:#1ec98b;--red:#ef5d5d;--accent:#3b82f6;--gold:#f0b90b;--mono:'SF Mono','Roboto Mono',monospace;--shadow:0 2px 12px rgba(0,0,0,.3);}
+[data-theme="light"]{--bg:#f0f2f5;--panel:#ffffff;--panel-2:#f5f7fa;--line:#e1e4e8;--ink:#1a1a2e;--ink-dim:#6b7280;--green:#059669;--red:#dc2626;--accent:#2563eb;--gold:#d97706;--shadow:0 2px 12px rgba(0,0,0,.1);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--panel);border-bottom:1px solid var(--line);}
+.brand{font-size:18px;font-weight:800;}.brand span{color:var(--accent);}
+.topbar-icons{display:flex;gap:14px;font-size:18px;color:var(--ink-dim);align-items:center;}
+.user-email{font-size:11px;color:var(--ink-dim);margin-top:2px;}
+.content{padding-bottom:80px;}
+.assets-hero{padding:18px 16px;background:linear-gradient(180deg,var(--panel) 0%,var(--bg) 100%);}
+.assets-hero .label{font-size:12px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.assets-hero .total{font-size:32px;font-weight:800;font-family:var(--mono);}
+.assets-hero .total small{font-size:16px;color:var(--ink-dim);font-weight:600;}
+.assets-hero .sub{font-size:13px;color:var(--ink-dim);margin-top:4px;}
+.price-update{font-size:10px;color:var(--ink-dim);margin-top:2px;}
+.action-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px 4px;}
+.action-btn{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 6px;text-align:center;font-size:11px;font-weight:600;color:var(--ink);cursor:pointer;}
+.action-btn .icon{font-size:18px;display:block;margin-bottom:4px;}
+.section-title{display:flex;justify-content:space-between;align-items:center;padding:18px 16px 8px;font-size:14px;font-weight:700;}
+.asset-list{padding:0 16px;}
+.asset-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);}
+.asset-row:last-child{border-bottom:none;}
+.coin-icon{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;}
+.coin-icon.usdt{background:#1a4d3d;color:#1ec98b;}.coin-icon.btc{background:#3a2c10;color:#f0b90b;}.coin-icon.eth{background:#1c2840;color:#7fa8ff;}.coin-icon.sol{background:#1a2a3a;color:#9945FF;}.coin-icon.trx{background:#2c1a3a;color:#c98bf0;}
+.asset-info{flex:1;min-width:0;}.asset-info .name{font-weight:700;font-size:14px;}.asset-info .full{font-size:11px;color:var(--ink-dim);}
+.asset-values{text-align:right;}.asset-values .amt{font-family:var(--mono);font-weight:700;font-size:14px;}.asset-values .usd{font-size:11px;color:var(--ink-dim);}
+.p2p-tabs{display:flex;gap:8px;padding:14px 16px 0;}
+.p2p-tab{flex:1;text-align:center;padding:10px;border-radius:10px;font-size:13px;font-weight:700;background:var(--panel);border:1px solid var(--line);color:var(--ink-dim);cursor:pointer;}
+.p2p-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.p2p-top-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 0;}
+.filter-chip{flex-shrink:0;font-size:12px;padding:6px 12px;border-radius:20px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-dim);font-weight:600;cursor:pointer;}
+.filter-chip.active{background:rgba(59,130,246,.15);border-color:var(--accent);color:var(--accent);}
+.p2p-offer{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 16px 10px;box-shadow:var(--shadow);}
+.p2p-offer .merchant-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--panel-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--accent);}
+.merchant-name{font-weight:700;font-size:13px;}.merchant-meta{font-size:11px;color:var(--ink-dim);}
+.verified-badge{font-size:9px;background:rgba(30,201,139,.15);color:var(--green);border-radius:5px;padding:2px 5px;font-weight:700;margin-left:4px;}
+.my-offer-badge{font-size:9px;background:rgba(59,130,246,.15);color:var(--accent);border-radius:5px;padding:2px 5px;font-weight:700;margin-left:4px;}
+.p2p-price{font-size:22px;font-weight:800;font-family:var(--mono);color:var(--green);margin:8px 0 2px;}.p2p-price.sell{color:var(--red);}
+.p2p-details{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-dim);margin-bottom:10px;}.p2p-details b{color:var(--ink);}
+.pay-methods{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.pay-chip{font-size:10px;padding:3px 8px;border-radius:6px;background:var(--panel-2);color:var(--ink-dim);border:1px solid var(--line);}
+.offer-btn{width:100%;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:13px;cursor:pointer;}
+.offer-btn.buy{background:var(--green);color:#06241a;}.offer-btn.sell{background:var(--red);color:#fff;}
+.offer-btn.my-offer{background:var(--panel-2);color:var(--ink-dim);border:1px solid var(--line);}
+.create-offer-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);display:flex;padding:6px 8px;z-index:5;}
+.nav-btn{flex:1;text-align:center;padding:8px 4px;border-radius:10px;font-size:11px;color:var(--ink-dim);font-weight:600;cursor:pointer;}
+.nav-btn.active{color:var(--accent);background:var(--panel-2);}
+.nav-icon{font-size:18px;display:block;margin-bottom:3px;}
+.hidden{display:none!important;}
+.subheader{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--panel);border-bottom:1px solid var(--line);}
+.back-btn{width:32px;height:32px;border-radius:50%;background:var(--panel-2);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink);cursor:pointer;flex-shrink:0;}
+.subheader .title{font-size:16px;font-weight:700;flex:1;}
+.order-summary{background:var(--panel);border-bottom:1px solid var(--line);padding:16px;}
+.order-summary .top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.order-summary .amount{font-size:24px;font-weight:800;font-family:var(--mono);}
+.order-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;text-transform:uppercase;}
+.order-status.pending{background:rgba(240,185,11,.15);color:var(--gold);}.order-status.paid{background:rgba(59,130,246,.15);color:var(--accent);}
+.order-status.completed{background:rgba(30,201,139,.15);color:var(--green);}.order-status.cancelled,.order-status.disputed{background:rgba(239,93,93,.15);color:var(--red);}
+.order-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.order-field .label{font-size:11px;color:var(--ink-dim);margin-bottom:2px;}.order-field .val{font-size:13px;font-weight:600;word-break:break-all;}
+.countdown{background:rgba(240,185,11,.1);border:1px solid rgba(240,185,11,.3);border-radius:10px;padding:10px 14px;margin:12px 16px;font-size:12px;color:var(--gold);display:flex;justify-content:space-between;}
+.countdown b{font-family:var(--mono);font-size:14px;}
+.chat-area{padding:12px 16px;display:flex;flex-direction:column;gap:10px;min-height:200px;}
+.msg{max-width:78%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.4;}
+.msg.them{background:var(--panel-2);align-self:flex-start;border-bottom-left-radius:4px;}
+.msg.me{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.msg.system{align-self:center;background:transparent;color:var(--ink-dim);font-size:11px;text-align:center;max-width:100%;}
+.msg-time{font-size:10px;opacity:.6;margin-top:4px;}.msg-sender{font-size:10px;opacity:.7;margin-bottom:2px;font-weight:600;}
+.order-actions{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:10px;z-index:5;}
+.order-actions button{flex:1;padding:13px;border-radius:10px;border:none;font-weight:700;font-size:13px;cursor:pointer;}
+.btn-confirm,.btn-release{background:var(--green);color:#06241a;}
+.btn-cancel{background:var(--panel-2);color:var(--ink-dim);border:1px solid var(--line);}
+.btn-dispute{background:rgba(239,93,93,.15);color:var(--red);border:1px solid rgba(239,93,93,.3);}
+.chat-input-row{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:10px;z-index:5;}
+.chat-input-row input{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:10px 16px;color:var(--ink);font-size:13px;}
+.chat-send{width:40px;height:40px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;}
+.history-item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 16px 10px;box-shadow:var(--shadow);}
+.history-item .top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.history-item .type{font-weight:700;font-size:14px;}.history-item .meta{font-size:11px;color:var(--ink-dim);}
+.history-item .amt{font-family:var(--mono);font-weight:700;font-size:15px;}.history-item .amt.pos{color:var(--green);}.history-item .amt.neg{color:var(--red);}
+.status-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:4px;}
+.status-badge.pending{background:rgba(240,185,11,.15);color:var(--gold);}.status-badge.completed{background:rgba(30,201,139,.15);color:var(--green);}.status-badge.rejected{background:rgba(239,93,93,.15);color:var(--red);}
+.form-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 16px;box-shadow:var(--shadow);}
+.field-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);margin-bottom:6px;display:block;}
+.input{width:100%;padding:13px 14px;margin-bottom:14px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);font-size:15px;}
+.input:focus{outline:2px solid var(--accent);outline-offset:1px;}select.input{appearance:none;}
+.network-select{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.network-opt{flex:1;min-width:60px;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);font-size:12px;font-weight:700;color:var(--ink-dim);cursor:pointer;}
+.network-opt.active{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.1);}
+.fee-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-dim);padding:8px 0;border-top:1px solid var(--line);margin-top:4px;}
+.max-link{color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;}
+.balance-hint{font-size:11px;color:var(--ink-dim);margin:-10px 0 14px;}
+.btn-primary-full{width:100%;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-top:4px;}
+.btn-danger-full{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(239,93,93,.3);background:rgba(239,93,93,.15);color:var(--red);font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;}
+.page{padding-bottom:90px;}
+.qr-box{display:flex;justify-content:center;padding:16px 0;}
+.addr-box{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:12px;word-break:break-all;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;}
+.shield-note{display:flex;align-items:flex-start;gap:10px;margin:14px 16px;background:rgba(30,201,139,.08);border:1px solid rgba(30,201,139,.25);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--ink-dim);line-height:1.5;}
+.warning-note{display:flex;align-items:flex-start;gap:10px;margin:14px 16px;background:rgba(240,185,11,.08);border:1px solid rgba(240,185,11,.25);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--ink-dim);line-height:1.5;}
+.menu-list{padding:0 16px;margin-bottom:6px;}
+.menu-item{display:flex;align-items:center;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow);}
+.menu-text{flex:1;min-width:0;}.menu-title{font-weight:700;font-size:14px;}.menu-sub{font-size:11px;color:var(--ink-dim);margin-top:2px;}.menu-chevron{font-size:20px;color:var(--ink-dim);flex-shrink:0;}
+.tx-hash-box{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:11px;word-break:break-all;margin-bottom:8px;color:var(--ink-dim);}
+.market-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel);}
+.market-info{flex:1;}.market-info .name{font-weight:700;font-size:14px;}.market-info .sym{font-size:11px;color:var(--ink-dim);}
+.market-price{text-align:right;}.market-price .price{font-family:var(--mono);font-weight:700;font-size:14px;}
+.change.pos{color:var(--green);font-size:11px;font-weight:600;}.change.neg{color:var(--red);font-size:11px;font-weight:600;}
+.profile-header{padding:24px 16px 16px;text-align:center;}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin:0 auto 10px;}
+.profile-name{font-size:18px;font-weight:800;}.profile-email-text{font-size:13px;color:var(--ink-dim);margin-top:2px;}
+.kyc-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-top:8px;}
+.kyc-badge.unverified{background:rgba(240,185,11,.15);color:var(--gold);}.kyc-badge.pending{background:rgba(59,130,246,.15);color:var(--accent);}.kyc-badge.verified{background:rgba(30,201,139,.15);color:var(--green);}
+.profile-menu{padding:0 16px;}
+.profile-menu-item{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow);}
+.profile-menu-item .left{display:flex;align-items:center;gap:12px;}.profile-menu-item .icon{font-size:20px;}
+.profile-menu-item .label{font-weight:600;font-size:14px;}.profile-menu-item .sub{font-size:11px;color:var(--ink-dim);}
+.theme-toggle{background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font-size:14px;cursor:pointer;color:var(--ink);}
+.verify-banner{background:rgba(240,185,11,.1);border-bottom:1px solid rgba(240,185,11,.3);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--gold);}
+.verify-banner button{background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;}
+.empty-history{text-align:center;padding:40px 16px;color:var(--ink-dim);font-size:13px;}
+.my-offer-item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 16px 10px;}
+.my-offer-item .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.offer-type-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;}
+.offer-type-badge.buy{background:rgba(30,201,139,.15);color:var(--green);}.offer-type-badge.sell{background:rgba(239,93,93,.15);color:var(--red);}
+.active-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(30,201,139,.15);color:var(--green);}
+.inactive-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(239,93,93,.15);color:var(--red);}
+.escrow-box{margin:0 16px 12px;border-radius:14px;border:1px solid rgba(240,185,11,.3);background:rgba(240,185,11,.06);padding:14px;}
+.escrow-row{display:flex;gap:10px;align-items:flex-start;}.escrow-icon{font-size:20px;flex-shrink:0;}
+.escrow-title{font-weight:700;font-size:13px;color:var(--gold);}.escrow-sub{font-size:12px;color:var(--ink-dim);margin-top:3px;line-height:1.4;}
+/* TRADE MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);z-index:100;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.trade-modal{background:var(--panel);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 16px 32px;}
+.trade-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.trade-modal-title{font-size:17px;font-weight:800;}
+.trade-modal-close{width:30px;height:30px;border-radius:50%;background:var(--panel-2);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink-dim);cursor:pointer;border:none;}
+.trade-info-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-dim);padding:9px 0;border-bottom:1px solid var(--line);}
+.trade-info-row b{color:var(--ink);font-weight:700;}
+.trade-amount-wrap{position:relative;margin:16px 0 4px;}
+.trade-amount-input{width:100%;padding:16px 60px 16px 16px;border-radius:12px;border:2px solid var(--line);background:var(--panel-2);color:var(--ink);font-size:24px;font-weight:800;font-family:var(--mono);text-align:center;}
+.trade-amount-input:focus{outline:none;border-color:var(--accent);}
+.trade-coin-label{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;color:var(--ink-dim);}
+.trade-total{text-align:center;font-size:13px;color:var(--ink-dim);margin-bottom:14px;}
+.trade-total b{color:var(--ink);font-size:15px;}
+.trade-error{background:rgba(239,93,93,.1);border:1px solid rgba(239,93,93,.3);color:var(--red);border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:12px;display:none;}
+.trade-error.show{display:block;}
+.trade-confirm-btn{width:100%;padding:15px;border-radius:12px;border:none;font-weight:700;font-size:15px;cursor:pointer;}
+.trade-confirm-btn.buy{background:var(--green);color:#06241a;}
+.trade-confirm-btn.sell{background:var(--red);color:#fff;}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div>
-    <div class="brand">Coin<span>Vexa</span></div>
-    <div class="user-email" id="userEmailDisplay"></div>
-  </div>
+  <div><div class="brand">Coin<span>Vexa</span></div><div class="user-email" id="userEmailDisplay"></div></div>
   <div class="topbar-icons">
     <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
     <span id="logoutBtn" style="cursor:pointer;">🚪</span>
@@ -209,7 +171,6 @@
 
 <div class="content hidden" id="appContent">
 
-  <!-- ASSETS PAGE -->
   <div id="assetsPage" class="page">
     <div class="assets-hero">
       <div class="label">Total Balance</div>
@@ -227,7 +188,6 @@
     <div class="asset-list" id="assetList"></div>
   </div>
 
-  <!-- P2P PAGE -->
   <div id="p2pPage" class="hidden page">
     <div class="p2p-tabs">
       <div class="p2p-tab active" data-side="buy">Buy</div>
@@ -240,37 +200,23 @@
           <option>USDT</option><option>BTC</option><option>ETH</option><option>SOL</option><option>TRX</option>
         </select>
         <select id="p2pCurrencyFilter" class="filter-chip" style="cursor:pointer;" onchange="loadP2POffers()">
-          <option value="ETB">🇪🇹 ETB</option>
-          <option value="USD">🇺🇸 USD</option>
-          <option value="EUR">🇪🇺 EUR</option>
-          <option value="GBP">🇬🇧 GBP</option>
-          <option value="AED">🇦🇪 AED</option>
-          <option value="SAR">🇸🇦 SAR</option>
-          <option value="KES">🇰🇪 KES</option>
-          <option value="NGN">🇳🇬 NGN</option>
-          <option value="EGP">🇪🇬 EGP</option>
-          <option value="TRY">🇹🇷 TRY</option>
-          <option value="INR">🇮🇳 INR</option>
-          <option value="PKR">🇵🇰 PKR</option>
-          <option value="BDT">🇧🇩 BDT</option>
-          <option value="GHS">🇬🇭 GHS</option>
-          <option value="TZS">🇹🇿 TZS</option>
-          <option value="UGX">🇺🇬 UGX</option>
-          <option value="MAD">🇲🇦 MAD</option>
-          <option value="CNY">🇨🇳 CNY</option>
-          <option value="RUB">🇷🇺 RUB</option>
-          <option value="BRL">🇧🇷 BRL</option>
+          <option value="ETB">🇪🇹 ETB</option><option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option>
+          <option value="GBP">🇬🇧 GBP</option><option value="AED">🇦🇪 AED</option><option value="SAR">🇸🇦 SAR</option>
+          <option value="KES">🇰🇪 KES</option><option value="NGN">🇳🇬 NGN</option><option value="EGP">🇪🇬 EGP</option>
+          <option value="TRY">🇹🇷 TRY</option><option value="INR">🇮🇳 INR</option><option value="PKR">🇵🇰 PKR</option>
+          <option value="BDT">🇧🇩 BDT</option><option value="GHS">🇬🇭 GHS</option><option value="TZS">🇹🇿 TZS</option>
+          <option value="UGX">🇺🇬 UGX</option><option value="MAD">🇲🇦 MAD</option><option value="CNY">🇨🇳 CNY</option>
+          <option value="RUB">🇷🇺 RUB</option><option value="BRL">🇧🇷 BRL</option>
         </select>
       </div>
-      <button class="create-offer-btn" onclick="goTo('createOfferPage')" id="createOfferBtn">+ Create Offer</button>
+      <button class="create-offer-btn" onclick="goTo('createOfferPage')">+ Create Offer</button>
     </div>
     <div id="offerList" style="margin-top:10px;"></div>
   </div>
 
-  <!-- CREATE OFFER PAGE -->
   <div id="createOfferPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('p2pPage')">←</div><div class="title">Create P2P Offer</div></div>
-    <div id="kycRequiredMsg" class="warning-note hidden"><span>⚠️</span><span>You must complete KYC verification before creating P2P offers. Go to Profile → Identity Verification.</span></div>
+    <div id="kycRequiredMsg" class="warning-note hidden"><span>⚠️</span><span>Complete KYC before posting offers. Go to Profile → Identity Verification.</span></div>
     <div class="form-card" id="createOfferForm">
       <label class="field-label">Offer Type</label>
       <div class="network-select">
@@ -278,31 +224,19 @@
         <div class="network-opt" id="offerTypeSell" onclick="selectOfferType('sell')">I'm Selling</div>
       </div>
       <label class="field-label">Cryptocurrency</label>
-      <select class="input" id="offerCoin">
-        <option>USDT</option><option>BTC</option><option>ETH</option><option>SOL</option><option>TRX</option>
-      </select>
+      <select class="input" id="offerCoin"><option>USDT</option><option>BTC</option><option>ETH</option><option>SOL</option><option>TRX</option></select>
       <label class="field-label">Fiat Currency</label>
       <select class="input" id="offerCurrency">
-        <option value="ETB">🇪🇹 Ethiopian Birr (ETB)</option>
-        <option value="USD">🇺🇸 US Dollar (USD)</option>
-        <option value="EUR">🇪🇺 Euro (EUR)</option>
-        <option value="GBP">🇬🇧 British Pound (GBP)</option>
-        <option value="AED">🇦🇪 UAE Dirham (AED)</option>
-        <option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
-        <option value="KES">🇰🇪 Kenyan Shilling (KES)</option>
-        <option value="NGN">🇳🇬 Nigerian Naira (NGN)</option>
-        <option value="EGP">🇪🇬 Egyptian Pound (EGP)</option>
-        <option value="TRY">🇹🇷 Turkish Lira (TRY)</option>
-        <option value="INR">🇮🇳 Indian Rupee (INR)</option>
-        <option value="PKR">🇵🇰 Pakistani Rupee (PKR)</option>
-        <option value="BDT">🇧🇩 Bangladeshi Taka (BDT)</option>
-        <option value="GHS">🇬🇭 Ghanaian Cedi (GHS)</option>
-        <option value="TZS">🇹🇿 Tanzanian Shilling (TZS)</option>
-        <option value="UGX">🇺🇬 Ugandan Shilling (UGX)</option>
-        <option value="MAD">🇲🇦 Moroccan Dirham (MAD)</option>
-        <option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
-        <option value="RUB">🇷🇺 Russian Ruble (RUB)</option>
-        <option value="BRL">🇧🇷 Brazilian Real (BRL)</option>
+        <option value="ETB">🇪🇹 Ethiopian Birr (ETB)</option><option value="USD">🇺🇸 US Dollar (USD)</option>
+        <option value="EUR">🇪🇺 Euro (EUR)</option><option value="GBP">🇬🇧 British Pound (GBP)</option>
+        <option value="AED">🇦🇪 UAE Dirham (AED)</option><option value="SAR">🇸🇦 Saudi Riyal (SAR)</option>
+        <option value="KES">🇰🇪 Kenyan Shilling (KES)</option><option value="NGN">🇳🇬 Nigerian Naira (NGN)</option>
+        <option value="EGP">🇪🇬 Egyptian Pound (EGP)</option><option value="TRY">🇹🇷 Turkish Lira (TRY)</option>
+        <option value="INR">🇮🇳 Indian Rupee (INR)</option><option value="PKR">🇵🇰 Pakistani Rupee (PKR)</option>
+        <option value="BDT">🇧🇩 Bangladeshi Taka (BDT)</option><option value="GHS">🇬🇭 Ghanaian Cedi (GHS)</option>
+        <option value="TZS">🇹🇿 Tanzanian Shilling (TZS)</option><option value="UGX">🇺🇬 Ugandan Shilling (UGX)</option>
+        <option value="MAD">🇲🇦 Moroccan Dirham (MAD)</option><option value="CNY">🇨🇳 Chinese Yuan (CNY)</option>
+        <option value="RUB">🇷🇺 Russian Ruble (RUB)</option><option value="BRL">🇧🇷 Brazilian Real (BRL)</option>
       </select>
       <label class="field-label">Price per coin (in fiat)</label>
       <input type="number" class="input" id="offerPrice" placeholder="e.g. 182.40">
@@ -320,7 +254,6 @@
     </div>
   </div>
 
-  <!-- ORDER / CHAT PAGE -->
   <div id="orderPage" class="hidden page">
     <div class="subheader">
       <div class="back-btn" onclick="goTo('p2pPage')">←</div>
@@ -343,35 +276,30 @@
       </div>
     </div>
     <div class="countdown hidden" id="countdownBox"><span>Complete payment within</span><b id="countdownTimer">14:58</b></div>
-    <div class="escrow-box" id="escrowBox">
+    <div class="escrow-box">
       <div class="escrow-row"><span class="escrow-icon">🔒</span><div><div class="escrow-title" id="escrowTitle">Funds held in escrow</div><div class="escrow-sub" id="escrowSub">Will be released once payment is confirmed.</div></div></div>
     </div>
-    <!-- Payment instructions (shown to buyer) -->
     <div class="form-card hidden" id="paymentInstructionsBox">
       <div style="font-weight:700;font-size:13px;margin-bottom:8px;">💳 Payment Instructions</div>
       <div id="paymentInstructionsText" style="font-size:13px;color:var(--ink-dim);line-height:1.6;white-space:pre-wrap;"></div>
     </div>
-    <!-- Chat -->
     <div style="padding:12px 16px 4px;font-size:12px;font-weight:700;color:var(--ink-dim);">💬 LIVE CHAT</div>
     <div class="chat-area" id="chatArea"></div>
     <div style="height:80px;"></div>
-    <!-- Buyer actions -->
     <div class="order-actions hidden" id="buyerActionsBar">
       <button class="btn-cancel" onclick="cancelOrder()">Cancel</button>
       <button class="btn-confirm" onclick="markPaid()">I've Paid</button>
     </div>
-    <!-- Seller actions -->
     <div class="order-actions hidden" id="sellerActionsBar">
       <button class="btn-dispute" onclick="disputeOrder()">Dispute</button>
       <button class="btn-release" onclick="releaseFunds()">Release Funds</button>
     </div>
-    <div class="chat-input-row" id="chatInputRow">
+    <div class="chat-input-row">
       <input type="text" placeholder="Type a message…" id="chatInput" onkeypress="if(event.key==='Enter')sendChat()">
       <button class="chat-send" onclick="sendChat()">➤</button>
     </div>
   </div>
 
-  <!-- HISTORY PAGE -->
   <div id="historyPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('assetsPage')">←</div><div class="title">Transaction History</div></div>
     <div style="display:flex;gap:8px;padding:12px 16px;overflow-x:auto;">
@@ -383,7 +311,6 @@
     <div id="historyList"></div>
   </div>
 
-  <!-- WITHDRAW PAGE -->
   <div id="withdrawPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('assetsPage')">←</div><div class="title">Withdraw</div></div>
     <div class="warning-note"><span>⚠️</span><span>Withdrawals require admin approval. Balance will be frozen until approved.</span></div>
@@ -391,9 +318,7 @@
       <label class="field-label">Coin</label>
       <select class="input" id="wdCoin" onchange="updateWdBalance()"><option>USDT</option><option>BTC</option><option>ETH</option><option>SOL</option><option>TRX</option></select>
       <label class="field-label">Network</label>
-      <div class="network-select">
-        <div class="network-opt active">TRC20</div><div class="network-opt">ERC20</div><div class="network-opt">BEP20</div>
-      </div>
+      <div class="network-select"><div class="network-opt active">TRC20</div><div class="network-opt">ERC20</div><div class="network-opt">BEP20</div></div>
       <label class="field-label">Withdrawal Address</label>
       <input type="text" class="input" placeholder="Enter wallet address" id="wdAddress">
       <label class="field-label">Amount</label>
@@ -407,7 +332,6 @@
     <div id="myWithdrawals" style="padding:0 16px;"></div>
   </div>
 
-  <!-- DEPOSIT PAGE -->
   <div id="depositPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('assetsPage')">←</div><div class="title">Deposit</div></div>
     <div class="shield-note"><span>🛡️</span><span>Only send the matching coin and network. Wrong network = permanent loss of funds.</span></div>
@@ -421,7 +345,6 @@
     </div>
   </div>
 
-  <!-- DEPOSIT ADDRESS PAGE -->
   <div id="depositAddressPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('depositPage')">←</div><div class="title">Deposit <span id="depTitleCoin">USDT</span></div></div>
     <div class="form-card">
@@ -429,7 +352,7 @@
       <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px;" id="depNetworkNote"></div>
       <div class="qr-box"><div id="qrCodeDisplay" style="background:#fff;padding:12px;border-radius:12px;display:inline-block;"></div></div>
       <label class="field-label">Deposit Address</label>
-      <div class="addr-box"><span id="depAddress" style="word-break:break-all;"></span><span class="copy-link" onclick="copyDepAddress()" style="color:var(--accent);font-weight:700;cursor:pointer;">Copy</span></div>
+      <div class="addr-box"><span id="depAddress" style="word-break:break-all;"></span><span onclick="copyDepAddress()" style="color:var(--accent);font-weight:700;cursor:pointer;">Copy</span></div>
       <div class="fee-row" id="depMinRow"><span>Minimum</span><span>—</span></div>
       <div class="fee-row" id="depArrivalRow"><span>Arrival</span><span>—</span></div>
       <button class="btn-primary-full" onclick="copyDepAddress()">📋 Copy Address</button>
@@ -447,13 +370,11 @@
     <div id="myDepositRequests" style="padding:0 16px 20px;"></div>
   </div>
 
-  <!-- MARKETS PAGE -->
   <div id="marketsPage" class="hidden page">
-    <div class="section-title"><span>Live Prices</span><span class="more" id="marketLastUpdate"></span></div>
+    <div class="section-title"><span>Live Prices</span><span style="font-size:12px;color:var(--ink-dim);" id="marketLastUpdate"></span></div>
     <div id="marketList"></div>
   </div>
 
-  <!-- PROFILE PAGE -->
   <div id="profilePage" class="hidden page">
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar">?</div>
@@ -471,25 +392,19 @@
     </div>
   </div>
 
-  <!-- MY OFFERS PAGE -->
   <div id="myOffersPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('profilePage')">←</div><div class="title">My P2P Offers</div></div>
     <div id="myOffersList" style="margin-top:10px;"></div>
   </div>
 
-  <!-- KYC PAGE -->
   <div id="kycPage" class="hidden page">
     <div class="subheader"><div class="back-btn" onclick="goTo('profilePage')">←</div><div class="title">Identity Verification</div></div>
     <div class="form-card">
       <div id="kycStatus" style="margin-bottom:14px;font-size:13px;color:var(--ink-dim);"></div>
-      <label class="field-label">Full Name</label>
-      <input type="text" class="input" id="kycName" placeholder="As on your ID">
-      <label class="field-label">Country</label>
-      <input type="text" class="input" id="kycCountry" placeholder="e.g. Ethiopia">
-      <label class="field-label">ID Number</label>
-      <input type="text" class="input" id="kycId" placeholder="Passport or National ID">
-      <label class="field-label">Date of Birth</label>
-      <input type="date" class="input" id="kycDob">
+      <label class="field-label">Full Name</label><input type="text" class="input" id="kycName" placeholder="As on your ID">
+      <label class="field-label">Country</label><input type="text" class="input" id="kycCountry" placeholder="e.g. Ethiopia">
+      <label class="field-label">ID Number</label><input type="text" class="input" id="kycId" placeholder="Passport or National ID">
+      <label class="field-label">Date of Birth</label><input type="date" class="input" id="kycDob">
       <button class="btn-primary-full" id="kycSubmitBtn" onclick="submitKyc()">Submit for Verification</button>
     </div>
   </div>
@@ -503,604 +418,305 @@
   <div class="nav-btn" data-page="profilePage"><span class="nav-icon">👤</span>Profile</div>
 </div>
 
+<!-- TRADE AMOUNT MODAL -->
+<div class="modal-overlay" id="tradeOverlay">
+  <div class="trade-modal">
+    <div class="trade-modal-header">
+      <div class="trade-modal-title" id="tradeTitle">Buy USDT</div>
+      <button class="trade-modal-close" onclick="closeTradeModal()">✕</button>
+    </div>
+    <div class="trade-info-row"><span>Merchant</span><b id="tradeMerchant">—</b></div>
+    <div class="trade-info-row"><span>Price</span><b id="tradePrice">—</b></div>
+    <div class="trade-info-row"><span>Available</span><b id="tradeAvail">—</b></div>
+    <div class="trade-info-row"><span>Limit</span><b id="tradeLimit">—</b></div>
+    <div class="trade-error" id="tradeError"></div>
+    <div class="trade-amount-wrap">
+      <input type="number" class="trade-amount-input" id="tradeAmtInput" placeholder="0.00" oninput="calcTradeTotal()">
+      <span class="trade-coin-label" id="tradeCoinLabel">USDT</span>
+    </div>
+    <div class="trade-total" id="tradeTotal">Total: <b>0.00</b></div>
+    <button class="trade-confirm-btn buy" id="tradeConfirmBtn" onclick="confirmTrade()">Confirm</button>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyD9_oAbItp_PGiKJNnHKa_S90CMCC1y4JU",
-  authDomain: "coinvexa-f4c37.firebaseapp.com",
-  projectId: "coinvexa-f4c37",
-  storageBucket: "coinvexa-f4c37.firebasestorage.app",
-  messagingSenderId: "514004370275",
-  appId: "1:514004370275:web:9238feb6cb23c116780956"
-};
+const firebaseConfig={apiKey:"AIzaSyD9_oAbItp_PGiKJNnHKa_S90CMCC1y4JU",authDomain:"coinvexa-f4c37.firebaseapp.com",projectId:"coinvexa-f4c37",storageBucket:"coinvexa-f4c37.firebasestorage.app",messagingSenderId:"514004370275",appId:"1:514004370275:web:9238feb6cb23c116780956"};
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth=firebase.auth(),db=firebase.firestore();
+let currentUser=null,userData=null,livePrices={USDT:1,BTC:64800,ETH:3375,SOL:148,TRX:0.135};
+let currentDepositCoin="USDT",isDark=true,currentOrderId=null,chatListener=null,currentOfferType="buy";
+let activeTradeOffer=null;
+const coinMeta={USDT:{full:"Tether",cls:"usdt",letter:"T"},BTC:{full:"Bitcoin",cls:"btc",letter:"B"},ETH:{full:"Ethereum",cls:"eth",letter:"E"},SOL:{full:"Solana",cls:"sol",letter:"S"},TRX:{full:"Tron",cls:"trx",letter:"X"}};
+const depositInfo={"USDT":{network:"TRON (TRC20)",address:"TBBnZdhgwfkKj1zNS9GEpjj58N6kLmEBip",min:"0.005 USDT",arrival:"~20 confirmations"},"BTC":{network:"Bitcoin (BTC)",address:"1BoZAfu4s8VonCfYY81SmALHV3JVUVtNcJ",min:"0.00001 BTC",arrival:"~1 confirmation"},"SOL":{network:"Solana (SOL)",address:"4eMjgQ8LjSo4gbrBPdxGeEgmhbpo7HJSXa2PWJADX9Dc",min:"0.001 SOL",arrival:"~200 confirmations"},"ETH":{network:"Ethereum (ERC20)",address:"0xc4338f9e5b6f290af6f4653d946308cef7625279",min:"0.00005 ETH",arrival:"~6 confirmations"},"TRX":{network:"TRON (TRC20)",address:"TBBnZdhgwfkKj1zNS9GEpjj58N6kLmEBip",min:"1 TRX",arrival:"~20 confirmations"}};
 
-let currentUser = null;
-let userData = null;
-let livePrices = { USDT:1, BTC:64800, ETH:3375, SOL:148, TRX:0.135 };
-let currentDepositCoin = 'USDT';
-let isDark = true;
-let currentOrderId = null;
-let chatListener = null;
-let currentOfferType = 'buy';
-let currentOrderRole = 'buyer'; // buyer or seller
+function toggleTheme(){isDark=!isDark;document.documentElement.setAttribute("data-theme",isDark?"dark":"light");document.querySelectorAll(".theme-toggle").forEach(b=>b.textContent=isDark?"🌙":"☀️");document.getElementById("themeIcon").textContent=isDark?"🌙":"☀️";document.getElementById("themeSub").textContent=isDark?"Currently Dark":"Currently Light";localStorage.setItem("cvTheme",isDark?"dark":"light");}
+const savedTheme=localStorage.getItem("cvTheme");if(savedTheme==="light"){isDark=false;document.documentElement.setAttribute("data-theme","light");}
 
-const coinMeta = {
-  USDT:{ full:'Tether', cls:'usdt', letter:'T' },
-  BTC:{ full:'Bitcoin', cls:'btc', letter:'B' },
-  ETH:{ full:'Ethereum', cls:'eth', letter:'E' },
-  SOL:{ full:'Solana', cls:'sol', letter:'S' },
-  TRX:{ full:'Tron', cls:'trx', letter:'X' }
-};
-const depositInfo = {
-  'USDT':{ network:'TRON (TRC20)', address:'TBBnZdhgwfkKj1zNS9GEpjj58N6kLmEBip', min:'0.005 USDT', arrival:'~20 confirmations' },
-  'BTC':{ network:'Bitcoin (BTC)', address:'1BoZAfu4s8VonCfYY81SmALHV3JVUVtNcJ', min:'0.00001 BTC', arrival:'~1 confirmation' },
-  'SOL':{ network:'Solana (SOL)', address:'4eMjgQ8LjSo4gbrBPdxGeEgmhbpo7HJSXa2PWJADX9Dc', min:'0.001 SOL', arrival:'~200 confirmations' },
-  'ETH':{ network:'Ethereum (ERC20)', address:'0xc4338f9e5b6f290af6f4653d946308cef7625279', min:'0.00005 ETH', arrival:'~6 confirmations' },
-  'TRX':{ network:'TRON (TRC20)', address:'TBBnZdhgwfkKj1zNS9GEpjj58N6kLmEBip', min:'1 TRX', arrival:'~20 confirmations' }
-};
-
-// THEME
-function toggleTheme(){
-  isDark=!isDark;
-  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
-  document.querySelectorAll('.theme-toggle').forEach(b=>b.textContent=isDark?'🌙':'☀️');
-  document.getElementById('themeIcon').textContent=isDark?'🌙':'☀️';
-  document.getElementById('themeSub').textContent=isDark?'Currently Dark':'Currently Light';
-  localStorage.setItem('cvTheme',isDark?'dark':'light');
-}
-const savedTheme=localStorage.getItem('cvTheme');
-if(savedTheme==='light'){ isDark=false; document.documentElement.setAttribute('data-theme','light'); }
-
-// AUTH
 auth.onAuthStateChanged(async(user)=>{
   if(user){
     currentUser=user;
-    document.getElementById('userEmailDisplay').textContent=user.email;
-    if(!user.emailVerified&&user.providerData[0]?.providerId==='password') document.getElementById('verifyBanner').classList.remove('hidden');
-    document.getElementById('authLoading').classList.add('hidden');
-    document.getElementById('appContent').classList.remove('hidden');
-    await loadUserData();
-    renderAssets();
-    renderHistory();
-    renderProfile();
-    fetchLivePrices();
-  } else { window.location.href='login.html'; }
+    document.getElementById("userEmailDisplay").textContent=user.email;
+    if(!user.emailVerified&&user.providerData[0]?.providerId==="password")document.getElementById("verifyBanner").classList.remove("hidden");
+    document.getElementById("authLoading").classList.add("hidden");
+    document.getElementById("appContent").classList.remove("hidden");
+    await loadUserData();renderAssets();renderHistory();renderProfile();fetchLivePrices();
+  }else{window.location.href="login.html";}
 });
 
 async function loadUserData(){
-  const ref=db.collection('users').doc(currentUser.uid);
-  const snap=await ref.get();
-  if(snap.exists){
-    userData=snap.data();
-    if(!userData.balances.SOL) userData.balances.SOL=0;
-    if(!userData.kyc) userData.kyc={status:'unverified'};
-    if(!userData.withdrawalRequests) userData.withdrawalRequests=[];
-    if(!userData.depositRequests) userData.depositRequests=[];
-  } else {
-    userData={ email:currentUser.email, displayName:currentUser.displayName||'', createdAt:firebase.firestore.FieldValue.serverTimestamp(), balances:{USDT:0,BTC:0,ETH:0,SOL:0,TRX:0}, transactions:[], withdrawalRequests:[], depositRequests:[], kyc:{status:'unverified'} };
-    await ref.set(userData);
-  }
+  const ref=db.collection("users").doc(currentUser.uid),snap=await ref.get();
+  if(snap.exists){userData=snap.data();if(!userData.balances.SOL)userData.balances.SOL=0;if(!userData.kyc)userData.kyc={status:"unverified"};if(!userData.withdrawalRequests)userData.withdrawalRequests=[];if(!userData.depositRequests)userData.depositRequests=[];}
+  else{userData={email:currentUser.email,displayName:currentUser.displayName||"",createdAt:firebase.firestore.FieldValue.serverTimestamp(),balances:{USDT:0,BTC:0,ETH:0,SOL:0,TRX:0},transactions:[],withdrawalRequests:[],depositRequests:[],kyc:{status:"unverified"}};await ref.set(userData);}
 }
+async function saveUserData(){await db.collection("users").doc(currentUser.uid).update({balances:userData.balances,transactions:userData.transactions,kyc:userData.kyc,withdrawalRequests:userData.withdrawalRequests,depositRequests:userData.depositRequests});}
 
-async function saveUserData(){
-  await db.collection('users').doc(currentUser.uid).update({
-    balances:userData.balances, transactions:userData.transactions,
-    kyc:userData.kyc, withdrawalRequests:userData.withdrawalRequests, depositRequests:userData.depositRequests
-  });
-}
-
-// LIVE PRICES
 async function fetchLivePrices(){
-  try{
-    const res=await fetch('https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana,tron,tether&limit=5');
-    const data=await res.json();
-    if(data&&data.data){ data.data.forEach(a=>{ const p=parseFloat(a.priceUsd); if(a.id==='bitcoin')livePrices.BTC=p; if(a.id==='ethereum')livePrices.ETH=p; if(a.id==='solana')livePrices.SOL=p; if(a.id==='tron')livePrices.TRX=p; if(a.id==='tether')livePrices.USDT=p||1; }); }
-    document.getElementById('priceUpdate').textContent=`Live · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
-  }catch(e){ document.getElementById('priceUpdate').textContent='Cached prices'; }
-  renderAssets(); renderMarkets();
+  try{const res=await fetch("https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana,tron,tether&limit=5"),data=await res.json();
+  if(data&&data.data){data.data.forEach(a=>{const p=parseFloat(a.priceUsd);if(a.id==="bitcoin")livePrices.BTC=p;if(a.id==="ethereum")livePrices.ETH=p;if(a.id==="solana")livePrices.SOL=p;if(a.id==="tron")livePrices.TRX=p;if(a.id==="tether")livePrices.USDT=p||1;});}
+  document.getElementById("priceUpdate").textContent="Live · "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}
+  catch(e){document.getElementById("priceUpdate").textContent="Cached prices";}
+  renderAssets();renderMarkets();
 }
 
-// RENDER ASSETS
 function renderAssets(){
-  if(!userData) return;
-  const b=userData.balances; let total=0;
-  Object.keys(b).forEach(c=>{ total+=(b[c]||0)*(livePrices[c]||0); });
-  document.getElementById('totalBalance').innerHTML=total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' <small>USDT</small>';
-  document.getElementById('assetList').innerHTML=Object.keys(coinMeta).map(coin=>{
-    const amt=b[coin]||0,usd=amt*(livePrices[coin]||0),m=coinMeta[coin];
-    return `<div class="asset-row"><div class="coin-icon ${m.cls}">${m.letter}</div><div class="asset-info"><div class="name">${coin}</div><div class="full">${m.full} · $${(livePrices[coin]||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div><div class="asset-values"><div class="amt">${amt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:coin==='BTC'?6:2})}</div><div class="usd">≈ $${usd.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`;
-  }).join('');
+  if(!userData)return;
+  const b=userData.balances;let total=0;
+  Object.keys(b).forEach(c=>{total+=(b[c]||0)*(livePrices[c]||0);});
+  document.getElementById("totalBalance").innerHTML=total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+" <small>USDT</small>";
+  document.getElementById("assetList").innerHTML=Object.keys(coinMeta).map(coin=>{const amt=b[coin]||0,usd=amt*(livePrices[coin]||0),m=coinMeta[coin];return `<div class="asset-row"><div class="coin-icon ${m.cls}">${m.letter}</div><div class="asset-info"><div class="name">${coin}</div><div class="full">${m.full} · $${(livePrices[coin]||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div><div class="asset-values"><div class="amt">${amt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:coin==="BTC"?6:2})}</div><div class="usd">≈ $${usd.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`;}).join("");
   updateWdBalance();
 }
 
-// RENDER MARKETS
 function renderMarkets(){
-  const coins=[{coin:'BTC',name:'Bitcoin',change:'+2.4%',pos:true},{coin:'ETH',name:'Ethereum',change:'+1.8%',pos:true},{coin:'SOL',name:'Solana',change:'+3.1%',pos:true},{coin:'TRX',name:'Tron',change:'-0.5%',pos:false},{coin:'USDT',name:'Tether',change:'0.00%',pos:true}];
-  document.getElementById('marketList').innerHTML=coins.map(c=>{ const m=coinMeta[c.coin],price=livePrices[c.coin]||0; return `<div class="market-row"><div class="coin-icon ${m.cls}" style="flex-shrink:0;">${m.letter}</div><div class="market-info"><div class="name">${c.name}</div><div class="sym">${c.coin}</div></div><div class="market-price"><div class="price">$${price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:c.coin==='BTC'?0:2})}</div><div class="change ${c.pos?'pos':'neg'}">${c.change}</div></div></div>`; }).join('');
-  document.getElementById('marketLastUpdate').textContent='via CoinCap';
+  const coins=[{coin:"BTC",name:"Bitcoin",change:"+2.4%",pos:true},{coin:"ETH",name:"Ethereum",change:"+1.8%",pos:true},{coin:"SOL",name:"Solana",change:"+3.1%",pos:true},{coin:"TRX",name:"Tron",change:"-0.5%",pos:false},{coin:"USDT",name:"Tether",change:"0.00%",pos:true}];
+  document.getElementById("marketList").innerHTML=coins.map(c=>{const m=coinMeta[c.coin],price=livePrices[c.coin]||0;return `<div class="market-row"><div class="coin-icon ${m.cls}" style="flex-shrink:0;">${m.letter}</div><div class="market-info"><div class="name">${c.name}</div><div class="sym">${c.coin}</div></div><div class="market-price"><div class="price">$${price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:c.coin==="BTC"?0:2})}</div><div class="change ${c.pos?"pos":"neg"}">${c.change}</div></div></div>`;}).join("");
+  document.getElementById("marketLastUpdate").textContent="via CoinCap";
 }
 
-// HISTORY
-let historyFilter='all';
-function filterHistory(type,el){ historyFilter=type; document.querySelectorAll('#historyPage .filter-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderHistory(); }
+let historyFilter="all";
+function filterHistory(type,el){historyFilter=type;document.querySelectorAll("#historyPage .filter-chip").forEach(c=>c.classList.remove("active"));el.classList.add("active");renderHistory();}
 function renderHistory(){
-  if(!userData) return;
+  if(!userData)return;
   let txns=(userData.transactions||[]).slice().reverse();
-  if(historyFilter!=='all') txns=txns.filter(t=>t.type.includes(historyFilter));
-  const list=document.getElementById('historyList');
-  if(!txns.length){ list.innerHTML='<div class="empty-history">No transactions yet.</div>'; return; }
-  list.innerHTML=txns.map(tx=>{ const isPos=tx.amount>0; const cls=tx.status==='Completed'?'completed':tx.status==='Rejected'?'rejected':'pending'; return `<div class="history-item"><div class="top-row"><span class="type">${tx.type}</span><span class="amt ${isPos?'pos':'neg'}">${isPos?'+':''}${Math.abs(tx.amount).toFixed(4)} ${tx.coin}</span></div><div class="meta">${tx.date}</div><span class="status-badge ${cls}">${tx.status}</span></div>`; }).join('');
+  if(historyFilter!=="all")txns=txns.filter(t=>t.type.includes(historyFilter));
+  const list=document.getElementById("historyList");
+  if(!txns.length){list.innerHTML="<div class=\"empty-history\">No transactions yet.</div>";return;}
+  list.innerHTML=txns.map(tx=>{const isPos=tx.amount>0;const cls=tx.status==="Completed"?"completed":tx.status==="Rejected"?"rejected":"pending";return `<div class="history-item"><div class="top-row"><span class="type">${tx.type}</span><span class="amt ${isPos?"pos":"neg"}">${isPos?"+":""}${Math.abs(tx.amount).toFixed(4)} ${tx.coin}</span></div><div class="meta">${tx.date}</div><span class="status-badge ${cls}">${tx.status}</span></div>`;}).join("");
 }
 
-// PROFILE
 function renderProfile(){
-  if(!currentUser) return;
-  const name=currentUser.displayName||currentUser.email.split('@')[0];
-  document.getElementById('profileAvatar').textContent=name[0].toUpperCase();
-  document.getElementById('profileName').textContent=name;
-  document.getElementById('profileEmailText').textContent=currentUser.email;
-  const kyc=userData?.kyc||{status:'unverified'};
-  const badge=document.getElementById('kycBadge');
-  if(kyc.status==='verified'){ badge.className='kyc-badge verified'; badge.textContent='✅ KYC Verified'; }
-  else if(kyc.status==='pending'){ badge.className='kyc-badge pending'; badge.textContent='🔄 KYC Pending'; }
-  else{ badge.className='kyc-badge unverified'; badge.textContent='⚠️ KYC Unverified'; }
+  if(!currentUser)return;
+  const name=currentUser.displayName||currentUser.email.split("@")[0];
+  document.getElementById("profileAvatar").textContent=name[0].toUpperCase();
+  document.getElementById("profileName").textContent=name;
+  document.getElementById("profileEmailText").textContent=currentUser.email;
+  const kyc=userData?.kyc||{status:"unverified"},badge=document.getElementById("kycBadge");
+  if(kyc.status==="verified"){badge.className="kyc-badge verified";badge.textContent="✅ KYC Verified";}
+  else if(kyc.status==="pending"){badge.className="kyc-badge pending";badge.textContent="🔄 KYC Pending";}
+  else{badge.className="kyc-badge unverified";badge.textContent="⚠️ KYC Unverified";}
 }
 
-async function addTransaction(type,coin,amount,status){
-  const date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  if(!userData.transactions) userData.transactions=[];
-  userData.transactions.push({type,coin,amount,status,date});
-  await saveUserData(); renderHistory();
-}
+async function addTransaction(type,coin,amount,status){const date=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});if(!userData.transactions)userData.transactions=[];userData.transactions.push({type,coin,amount,status,date});await saveUserData();renderHistory();}
 
-// NAVIGATION
-const allPages=['assetsPage','p2pPage','createOfferPage','orderPage','historyPage','withdrawPage','depositPage','depositAddressPage','marketsPage','profilePage','myOffersPage','kycPage'];
+const allPages=["assetsPage","p2pPage","createOfferPage","orderPage","historyPage","withdrawPage","depositPage","depositAddressPage","marketsPage","profilePage","myOffersPage","kycPage"];
 function goTo(pageId){
-  allPages.forEach(id=>document.getElementById(id).classList.add('hidden'));
-  document.getElementById(pageId).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  if(['assetsPage','historyPage','withdrawPage','depositPage','depositAddressPage'].includes(pageId)) document.querySelector('.nav-btn[data-page="assetsPage"]').classList.add('active');
-  else if(['p2pPage','orderPage','createOfferPage'].includes(pageId)) document.querySelector('.nav-btn[data-page="p2pPage"]').classList.add('active');
-  else if(pageId==='marketsPage') document.querySelector('.nav-btn[data-page="marketsPage"]').classList.add('active');
-  else if(['profilePage','kycPage','myOffersPage'].includes(pageId)) document.querySelector('.nav-btn[data-page="profilePage"]').classList.add('active');
-  if(pageId==='p2pPage') loadP2POffers();
-  if(pageId==='marketsPage'){ renderMarkets(); fetchLivePrices(); }
-  if(pageId==='profilePage') renderProfile();
-  if(pageId==='kycPage') renderKycPage();
-  if(pageId==='historyPage') renderHistory();
-  if(pageId==='withdrawPage'){ renderMyWithdrawals(); updateWdBalance(); }
-  if(pageId==='depositAddressPage') renderMyDepositRequests();
-  if(pageId==='createOfferPage') checkKycForOffer();
-  if(pageId==='myOffersPage') loadMyOffers();
-  if(chatListener&&pageId!=='orderPage'){ chatListener(); chatListener=null; }
+  allPages.forEach(id=>document.getElementById(id).classList.add("hidden"));
+  document.getElementById(pageId).classList.remove("hidden");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  if(["assetsPage","historyPage","withdrawPage","depositPage","depositAddressPage"].includes(pageId))document.querySelector(".nav-btn[data-page=\"assetsPage\"]").classList.add("active");
+  else if(["p2pPage","orderPage","createOfferPage"].includes(pageId))document.querySelector(".nav-btn[data-page=\"p2pPage\"]").classList.add("active");
+  else if(pageId==="marketsPage")document.querySelector(".nav-btn[data-page=\"marketsPage\"]").classList.add("active");
+  else if(["profilePage","kycPage","myOffersPage"].includes(pageId))document.querySelector(".nav-btn[data-page=\"profilePage\"]").classList.add("active");
+  if(pageId==="p2pPage")loadP2POffers();
+  if(pageId==="marketsPage"){renderMarkets();fetchLivePrices();}
+  if(pageId==="profilePage")renderProfile();
+  if(pageId==="kycPage")renderKycPage();
+  if(pageId==="historyPage")renderHistory();
+  if(pageId==="withdrawPage"){renderMyWithdrawals();updateWdBalance();}
+  if(pageId==="depositAddressPage")renderMyDepositRequests();
+  if(pageId==="createOfferPage")checkKycForOffer();
+  if(pageId==="myOffersPage")loadMyOffers();
+  if(chatListener&&pageId!=="orderPage"){chatListener();chatListener=null;}
   window.scrollTo(0,0);
 }
-document.querySelectorAll('.nav-btn[data-page]').forEach(btn=>{ btn.onclick=()=>goTo(btn.dataset.page); });
+document.querySelectorAll(".nav-btn[data-page]").forEach(btn=>{btn.onclick=()=>goTo(btn.dataset.page);});
+document.getElementById("logoutBtn").addEventListener("click",logoutConfirm);
+function logoutConfirm(){if(!confirm("Log out?"))return;auth.signOut().then(()=>window.location.href="login.html");}
+async function resendVerification(){try{await currentUser.sendEmailVerification();alert("Verification email sent!");}catch(e){alert(e.message);}}
 
-// LOGOUT
-document.getElementById('logoutBtn').addEventListener('click',logoutConfirm);
-function logoutConfirm(){ if(!confirm('Log out?'))return; auth.signOut().then(()=>window.location.href='login.html'); }
-async function resendVerification(){ try{ await currentUser.sendEmailVerification(); alert('Verification email sent!'); }catch(e){ alert(e.message); } }
-
-// ===== P2P MARKETPLACE =====
 async function loadP2POffers(){
-  const coin=document.getElementById('p2pCoinFilter').value;
-  const currency=document.getElementById('p2pCurrencyFilter').value;
-  const activeSide=document.querySelector('.p2p-tab.active')?.dataset.side||'buy';
-  if(activeSide==='myoffers'){ loadMyOffers(); return; }
-  document.getElementById('offerList').innerHTML='<div style="text-align:center;padding:30px;color:var(--ink-dim);">Loading offers…</div>';
+  const coin=document.getElementById("p2pCoinFilter").value,currency=document.getElementById("p2pCurrencyFilter").value;
+  const activeSide=document.querySelector(".p2p-tab.active")?.dataset.side||"buy";
+  if(activeSide==="myoffers"){loadMyOffers();return;}
+  document.getElementById("offerList").innerHTML="<div style=\"text-align:center;padding:30px;color:var(--ink-dim)\">Loading…</div>";
   try{
-    const snap=await db.collection('p2pOffers')
-      .where('coin','==',coin)
-      .where('currency','==',currency)
-      .where('type','==',activeSide==='buy'?'buy':'sell')
-      .where('active','==',true)
-      .orderBy('createdAt','desc')
-      .limit(20)
-      .get();
-    const offers=snap.docs.map(d=>({id:d.id,...d.data()}));
-    renderOfferList(offers, activeSide);
-  }catch(e){
-    document.getElementById('offerList').innerHTML='<div style="text-align:center;padding:30px;color:var(--red);">Error loading offers.<br><small>'+e.message+'</small></div>';
-  }
+    const snap=await db.collection("p2pOffers").where("coin","==",coin).where("currency","==",currency).where("type","==",activeSide==="buy"?"buy":"sell").where("active","==",true).orderBy("createdAt","desc").limit(20).get();
+    renderOfferList(snap.docs.map(d=>({id:d.id,...d.data()})),activeSide);
+  }catch(e){document.getElementById("offerList").innerHTML="<div style=\"text-align:center;padding:30px;color:var(--red)\">Error: "+e.message+"</div>";}
 }
 
-function renderOfferList(offers, side){
-  if(!offers.length){ document.getElementById('offerList').innerHTML='<div style="text-align:center;padding:40px;color:var(--ink-dim);">No offers available.<br>Be the first to create one!</div>'; return; }
-  const btnLabel=side==='buy'?'Sell USDT':'Buy USDT';
-  const btnCls=side==='buy'?'sell':'buy';
-  document.getElementById('offerList').innerHTML=offers.map(o=>{
-    const isMe=o.userId===currentUser.uid;
-    const initial=(o.merchantName||'?')[0].toUpperCase();
-    return `<div class="p2p-offer">
-      <div class="merchant-row"><div class="avatar">${initial}</div>
-        <div><div class="merchant-name">${escapeHtml(o.merchantName||'Merchant')} ${o.kycVerified?'<span class="verified-badge">KYC</span>':''} ${isMe?'<span class="my-offer-badge">MY OFFER</span>':''}</div>
-        <div class="merchant-meta">${o.currency} · ${o.paymentMethods?.join(', ')||'—'}</div></div>
-      </div>
-      <div class="p2p-price ${side==='buy'?'':'sell'}">${(o.price||0).toLocaleString()} ${o.currency}</div>
-      <div class="p2p-details"><span>Available: <b>${(o.amount||0).toLocaleString()} ${o.coin}</b></span><span>Limit: <b>${(o.minOrder||0).toLocaleString()}–${(o.maxOrder||0).toLocaleString()} ${o.currency}</b></span></div>
-      <div class="pay-methods">${(o.paymentMethods||[]).map(m=>`<span class="pay-chip">${m}</span>`).join('')}</div>
-      ${isMe?`<button class="offer-btn my-offer" onclick="manageMyOffer('${o.id}')">Manage Offer</button>`:`<button class="offer-btn ${btnCls}" onclick="openOrderFromOffer('${o.id}')">${btnLabel}</button>`}
-    </div>`;
-  }).join('');
+function renderOfferList(offers,side){
+  if(!offers.length){document.getElementById("offerList").innerHTML="<div style=\"text-align:center;padding:40px;color:var(--ink-dim)\">No offers available.<br>Be the first to create one!</div>";return;}
+  const btnLabel=side==="buy"?"Sell":"Buy",btnCls=side==="buy"?"sell":"buy";
+  document.getElementById("offerList").innerHTML=offers.map(o=>{
+    const isMe=o.userId===currentUser.uid,initial=(o.merchantName||"?")[0].toUpperCase();
+    return `<div class="p2p-offer"><div class="merchant-row"><div class="avatar">${initial}</div><div><div class="merchant-name">${escapeHtml(o.merchantName||"Merchant")} ${o.kycVerified?"<span class=\"verified-badge\">KYC</span>":""} ${isMe?"<span class=\"my-offer-badge\">MY OFFER</span>":""}</div><div class="merchant-meta">${o.currency} · ${o.paymentMethods?.join(", ")||"—"}</div></div></div><div class="p2p-price ${side==="buy"?"":"sell"}">${(o.price||0).toLocaleString()} ${o.currency}</div><div class="p2p-details"><span>Available: <b>${(o.amount||0).toLocaleString()} ${o.coin}</b></span><span>Limit: <b>${(o.minOrder||0).toLocaleString()}–${(o.maxOrder||0).toLocaleString()} ${o.currency}</b></span></div><div class="pay-methods">${(o.paymentMethods||[]).map(m=>`<span class="pay-chip">${m}</span>`).join("")}</div>${isMe?`<button class="offer-btn my-offer" onclick="goTo('myOffersPage')">Manage Offer</button>`:`<button class="offer-btn ${btnCls}" onclick="openTradeModal('${o.id}')">${btnLabel} ${o.coin}</button>`}</div>`;
+  }).join("");
 }
 
-// P2P Tabs
-document.querySelectorAll('.p2p-tab').forEach(tab=>{
-  tab.onclick=()=>{
-    document.querySelectorAll('.p2p-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    if(tab.dataset.side==='myoffers') loadMyOffers();
-    else loadP2POffers();
-  };
-});
+document.querySelectorAll(".p2p-tab").forEach(tab=>{tab.onclick=()=>{document.querySelectorAll(".p2p-tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active");if(tab.dataset.side==="myoffers")loadMyOffers();else loadP2POffers();};});
 
-// ===== CREATE OFFER =====
-function selectOfferType(type){
-  currentOfferType=type;
-  document.getElementById('offerTypeBuy').classList.toggle('active',type==='buy');
-  document.getElementById('offerTypeSell').classList.toggle('active',type==='sell');
-}
-
-function checkKycForOffer(){
-  const kyc=userData?.kyc||{};
-  const kycMsg=document.getElementById('kycRequiredMsg');
-  const form=document.getElementById('createOfferForm');
-  if(kyc.status!=='verified'){
-    kycMsg.classList.remove('hidden');
-    form.classList.add('hidden');
-  } else {
-    kycMsg.classList.add('hidden');
-    form.classList.remove('hidden');
-  }
-}
+function selectOfferType(type){currentOfferType=type;document.getElementById("offerTypeBuy").classList.toggle("active",type==="buy");document.getElementById("offerTypeSell").classList.toggle("active",type==="sell");}
+function checkKycForOffer(){const kyc=userData?.kyc||{};const msg=document.getElementById("kycRequiredMsg"),form=document.getElementById("createOfferForm");if(kyc.status!=="verified"){msg.classList.remove("hidden");form.classList.add("hidden");}else{msg.classList.add("hidden");form.classList.remove("hidden");}}
 
 async function submitOffer(){
-  const kyc=userData?.kyc||{};
-  if(kyc.status!=='verified'){ alert('You must complete KYC verification first.'); return; }
-  const coin=document.getElementById('offerCoin').value;
-  const currency=document.getElementById('offerCurrency').value;
-  const price=parseFloat(document.getElementById('offerPrice').value);
-  const amount=parseFloat(document.getElementById('offerAmount').value);
-  const minOrder=parseFloat(document.getElementById('offerMin').value);
-  const maxOrder=parseFloat(document.getElementById('offerMax').value);
-  const paymentMethods=document.getElementById('offerPayments').value.split(',').map(s=>s.trim()).filter(Boolean);
-  const instructions=document.getElementById('offerInstructions').value.trim();
-  if(!price||!amount||!minOrder||!maxOrder||!paymentMethods.length){ alert('Please fill in all fields.'); return; }
-  if(minOrder>maxOrder){ alert('Min order cannot be greater than max order.'); return; }
-  // If selling, check balance
-  if(currentOfferType==='sell'){
-    const bal=userData.balances[coin]||0;
-    if(amount>bal){ alert(`Insufficient ${coin} balance. You have ${bal} ${coin}.`); return; }
-  }
-  if(!confirm(`Post this ${currentOfferType} offer?\n${amount} ${coin} at ${price} ${currency} each`)) return;
+  const kyc=userData?.kyc||{};if(kyc.status!=="verified"){alert("Complete KYC first.");return;}
+  const coin=document.getElementById("offerCoin").value,currency=document.getElementById("offerCurrency").value;
+  const price=parseFloat(document.getElementById("offerPrice").value),amount=parseFloat(document.getElementById("offerAmount").value);
+  const minOrder=parseFloat(document.getElementById("offerMin").value),maxOrder=parseFloat(document.getElementById("offerMax").value);
+  const paymentMethods=document.getElementById("offerPayments").value.split(",").map(s=>s.trim()).filter(Boolean);
+  const instructions=document.getElementById("offerInstructions").value.trim();
+  if(!price||!amount||!minOrder||!maxOrder||!paymentMethods.length){alert("Fill in all fields.");return;}
+  if(minOrder>maxOrder){alert("Min order cannot be greater than max order.");return;}
+  if(currentOfferType==="sell"){const bal=userData.balances[coin]||0;if(amount>bal){alert(`Insufficient ${coin}. You have ${bal}.`);return;}}
+  if(!confirm(`Post this ${currentOfferType} offer?
+${amount} ${coin} at ${price} ${currency} each`))return;
   try{
-    const name=currentUser.displayName||currentUser.email.split('@')[0];
-    await db.collection('p2pOffers').add({
-      userId: currentUser.uid,
-      merchantName: name,
-      kycVerified: kyc.status==='verified',
-      type: currentOfferType,
-      coin, currency, price, amount,
-      minOrder, maxOrder,
-      paymentMethods, instructions,
-      active: true,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    alert('✅ Offer posted successfully!');
-    goTo('p2pPage');
-  }catch(e){ alert('Error posting offer: '+e.message); }
+    await db.collection("p2pOffers").add({userId:currentUser.uid,merchantName:currentUser.displayName||currentUser.email.split("@")[0],kycVerified:kyc.status==="verified",type:currentOfferType,coin,currency,price,amount,minOrder,maxOrder,paymentMethods,instructions,active:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    alert("✅ Offer posted!");goTo("p2pPage");
+  }catch(e){alert("Error: "+e.message);}
 }
 
-// ===== MY OFFERS =====
 async function loadMyOffers(){
-  const el=document.getElementById('myOffersList')||document.getElementById('offerList');
-  if(!el) return;
+  const el=document.getElementById("myOffersList")||document.getElementById("offerList");if(!el)return;
   try{
-    const snap=await db.collection('p2pOffers').where('userId','==',currentUser.uid).orderBy('createdAt','desc').get();
+    const snap=await db.collection("p2pOffers").where("userId","==",currentUser.uid).orderBy("createdAt","desc").get();
     const offers=snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(!offers.length){ el.innerHTML='<div class="empty-history">You have no offers yet.<br>Go to P2P → Create Offer.</div>'; return; }
-    el.innerHTML=offers.map(o=>`
-      <div class="my-offer-item">
-        <div class="top">
-          <div><span class="offer-type-badge ${o.type}">${o.type.toUpperCase()}</span> ${o.coin}/${o.currency}</div>
-          <span class="${o.active?'active-badge':'inactive-badge'}">${o.active?'ACTIVE':'PAUSED'}</span>
-        </div>
-        <div style="font-size:13px;margin:6px 0;">Price: <b>${(o.price||0).toLocaleString()} ${o.currency}</b> · Amount: <b>${o.amount} ${o.coin}</b></div>
-        <div style="font-size:12px;color:var(--ink-dim);">Limit: ${(o.minOrder||0).toLocaleString()}–${(o.maxOrder||0).toLocaleString()} ${o.currency}</div>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <button onclick="toggleOffer('${o.id}',${!o.active})" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);font-weight:700;font-size:12px;cursor:pointer;">${o.active?'⏸ Pause':'▶ Activate'}</button>
-          <button onclick="deleteOffer('${o.id}')" style="flex:1;padding:8px;border-radius:8px;border:none;background:rgba(239,93,93,.15);color:var(--red);font-weight:700;font-size:12px;cursor:pointer;">🗑 Delete</button>
-        </div>
-      </div>`).join('');
-  }catch(e){ el.innerHTML='<div class="empty-history" style="color:var(--red);">Error: '+e.message+'</div>'; }
+    if(!offers.length){el.innerHTML="<div class=\"empty-history\">No offers yet.</div>";return;}
+    el.innerHTML=offers.map(o=>`<div class="my-offer-item"><div class="top"><div><span class="offer-type-badge ${o.type}">${o.type.toUpperCase()}</span> ${o.coin}/${o.currency}</div><span class="${o.active?"active-badge":"inactive-badge"}">${o.active?"ACTIVE":"PAUSED"}</span></div><div style="font-size:13px;margin:6px 0;">Price: <b>${(o.price||0).toLocaleString()} ${o.currency}</b> · Amount: <b>${o.amount} ${o.coin}</b></div><div style="font-size:12px;color:var(--ink-dim);">Limit: ${(o.minOrder||0).toLocaleString()}–${(o.maxOrder||0).toLocaleString()} ${o.currency}</div><div style="display:flex;gap:8px;margin-top:10px;"><button onclick="toggleOffer('${o.id}',${!o.active})" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);font-weight:700;font-size:12px;cursor:pointer;">${o.active?"⏸ Pause":"▶ Activate"}</button><button onclick="deleteOffer('${o.id}')" style="flex:1;padding:8px;border-radius:8px;border:none;background:rgba(239,93,93,.15);color:var(--red);font-weight:700;font-size:12px;cursor:pointer;">🗑 Delete</button></div></div>`).join("");
+  }catch(e){el.innerHTML="<div class=\"empty-history\" style=\"color:var(--red)\">Error: "+e.message+"</div>";}
 }
+async function toggleOffer(id,active){try{await db.collection("p2pOffers").doc(id).update({active});loadMyOffers();}catch(e){alert(e.message);}}
+async function deleteOffer(id){if(!confirm("Delete?"))return;try{await db.collection("p2pOffers").doc(id).delete();loadMyOffers();}catch(e){alert(e.message);}}
 
-async function toggleOffer(id, active){
-  try{ await db.collection('p2pOffers').doc(id).update({active}); loadMyOffers(); }
-  catch(e){ alert(e.message); }
-}
-
-async function deleteOffer(id){
-  if(!confirm('Delete this offer?')) return;
-  try{ await db.collection('p2pOffers').doc(id).delete(); loadMyOffers(); }
-  catch(e){ alert(e.message); }
-}
-
-function manageMyOffer(id){ goTo('myOffersPage'); }
-
-// ===== OPEN ORDER FROM OFFER =====
-async function openOrderFromOffer(offerId){
+// ===== STYLED TRADE MODAL =====
+async function openTradeModal(offerId){
   try{
-    const offerSnap=await db.collection('p2pOffers').doc(offerId).get();
-    if(!offerSnap.exists){ alert('Offer no longer available.'); return; }
-    const offer={id:offerSnap.id,...offerSnap.data()};
-    if(offer.userId===currentUser.uid){ alert('You cannot trade with your own offer.'); return; }
-    // Determine amount
-    const cryptoAmount=prompt(`How much ${offer.coin} do you want to ${offer.type==='buy'?'sell':'buy'}?\nAvailable: ${offer.amount} ${offer.coin}\nPrice: ${offer.price} ${offer.currency}`);
-    if(!cryptoAmount) return;
-    const amount=parseFloat(cryptoAmount);
-    if(!amount||amount<=0||amount>offer.amount){ alert('Invalid amount.'); return; }
-    const total=amount*offer.price;
-    if(total<offer.minOrder||total>offer.maxOrder){ alert(`Order total (${total} ${offer.currency}) must be between ${offer.minOrder} and ${offer.maxOrder} ${offer.currency}.`); return; }
-    // Create order in Firestore
-    const orderId='CV'+Date.now().toString().slice(-6);
-    const isBuyer=offer.type==='sell'; // if offer is sell, I am buyer
-    const orderRef=await db.collection('p2pOrders').add({
-      orderId, offerId,
-      buyerId: isBuyer?currentUser.uid:offer.userId,
-      sellerId: isBuyer?offer.userId:currentUser.uid,
-      buyerEmail: isBuyer?currentUser.email:offer.merchantName,
-      sellerEmail: isBuyer?offer.merchantName:currentUser.email,
-      coin: offer.coin,
-      currency: offer.currency,
-      price: offer.price,
-      amount, total,
-      paymentMethods: offer.paymentMethods,
-      instructions: offer.instructions||'',
-      status:'pending',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    // Open the order chat
-    openOrderChat(orderRef.id, isBuyer?'buyer':'seller', offer, amount, total);
-  }catch(e){ alert('Error creating order: '+e.message); }
+    const snap=await db.collection("p2pOffers").doc(offerId).get();
+    if(!snap.exists){alert("Offer no longer available.");return;}
+    const offer={id:snap.id,...snap.data()};
+    if(offer.userId===currentUser.uid){alert("Cannot trade your own offer.");return;}
+    activeTradeOffer=offer;
+    const isBuyer=offer.type==="sell";
+    document.getElementById("tradeTitle").textContent=(isBuyer?"Buy ":"Sell ")+offer.coin;
+    document.getElementById("tradeMerchant").textContent=offer.merchantName||"Merchant";
+    document.getElementById("tradePrice").textContent=(offer.price||0).toLocaleString()+" "+offer.currency;
+    document.getElementById("tradeAvail").textContent=(offer.amount||0).toLocaleString()+" "+offer.coin;
+    document.getElementById("tradeLimit").textContent=(offer.minOrder||0).toLocaleString()+" – "+(offer.maxOrder||0).toLocaleString()+" "+offer.currency;
+    document.getElementById("tradeCoinLabel").textContent=offer.coin;
+    document.getElementById("tradeAmtInput").value="";
+    document.getElementById("tradeTotal").innerHTML="Total: <b>0.00 "+offer.currency+"</b>";
+    document.getElementById("tradeError").classList.remove("show");
+    const btn=document.getElementById("tradeConfirmBtn");
+    btn.className="trade-confirm-btn "+(isBuyer?"buy":"sell");
+    btn.textContent=(isBuyer?"Buy ":"Sell ")+offer.coin;
+    document.getElementById("tradeOverlay").classList.add("open");
+    setTimeout(()=>document.getElementById("tradeAmtInput").focus(),300);
+  }catch(e){alert("Error: "+e.message);}
 }
 
-// ===== ORDER CHAT =====
-function openOrderChat(orderDocId, role, offerData, amount, total){
+function closeTradeModal(){document.getElementById("tradeOverlay").classList.remove("open");activeTradeOffer=null;}
+
+function calcTradeTotal(){
+  if(!activeTradeOffer)return;
+  const amt=parseFloat(document.getElementById("tradeAmtInput").value)||0;
+  const total=(amt*activeTradeOffer.price).toLocaleString(undefined,{maximumFractionDigits:2});
+  document.getElementById("tradeTotal").innerHTML=`Total: <b>${total} ${activeTradeOffer.currency}</b>`;
+  document.getElementById("tradeError").classList.remove("show");
+}
+
+async function confirmTrade(){
+  if(!activeTradeOffer)return;
+  const offer=activeTradeOffer;
+  const errEl=document.getElementById("tradeError");
+  const amount=parseFloat(document.getElementById("tradeAmtInput").value);
+  if(!amount||amount<=0){errEl.textContent="Enter a valid amount.";errEl.classList.add("show");return;}
+  if(amount>offer.amount){errEl.textContent="Exceeds available "+offer.coin+" ("+offer.amount+").";errEl.classList.add("show");return;}
+  const total=amount*offer.price;
+  if(total<offer.minOrder||total>offer.maxOrder){errEl.textContent="Total must be "+offer.minOrder.toLocaleString()+" – "+offer.maxOrder.toLocaleString()+" "+offer.currency+".";errEl.classList.add("show");return;}
+  closeTradeModal();
+  try{
+    const isBuyer=offer.type==="sell";
+    const orderId="CV"+Date.now().toString().slice(-6);
+    const ref=await db.collection("p2pOrders").add({orderId,offerId:offer.id,buyerId:isBuyer?currentUser.uid:offer.userId,sellerId:isBuyer?offer.userId:currentUser.uid,buyerEmail:isBuyer?currentUser.email:offer.merchantName,sellerEmail:isBuyer?offer.merchantName:currentUser.email,coin:offer.coin,currency:offer.currency,price:offer.price,amount,total,paymentMethods:offer.paymentMethods,instructions:offer.instructions||"",status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    openOrderChat(ref.id,isBuyer?"buyer":"seller",offer,amount,total);
+  }catch(e){alert("Error: "+e.message);}
+}
+
+function openOrderChat(orderDocId,role,offerData,amount,total){
   currentOrderId=orderDocId;
-  currentOrderRole=role;
-  // Set UI
-  document.getElementById('orderTitle').textContent='Order Chat';
-  document.getElementById('orderIdDisplay').textContent='#'+orderDocId.slice(-6).toUpperCase();
-  document.getElementById('orderDirection').textContent=role==='buyer'?'You are buying':'You are selling';
-  document.getElementById('orderAmt').textContent=(amount||0).toFixed(4)+' '+(offerData?.coin||'');
-  document.getElementById('orderPrice').textContent=(offerData?.price||0).toLocaleString()+' '+(offerData?.currency||'');
-  document.getElementById('orderTotal').textContent=(total||0).toLocaleString()+' '+(offerData?.currency||'');
-  document.getElementById('orderMerchant').textContent=role==='buyer'?(offerData?.merchantName||'Seller'):(offerData?.merchantName||'Buyer');
-  document.getElementById('orderPayment').textContent=(offerData?.paymentMethods||[]).join(', ')||'—';
-  document.getElementById('orderStatus').textContent='Pending';
-  document.getElementById('orderStatus').className='order-status pending';
-  // Show countdown for buyer
-  if(role==='buyer'){
-    document.getElementById('countdownBox').classList.remove('hidden');
-    startCountdown();
-    document.getElementById('buyerActionsBar').classList.remove('hidden');
-    document.getElementById('sellerActionsBar').classList.add('hidden');
-  } else {
-    document.getElementById('countdownBox').classList.add('hidden');
-    document.getElementById('sellerActionsBar').classList.remove('hidden');
-    document.getElementById('buyerActionsBar').classList.add('hidden');
-  }
-  // Show payment instructions
-  if(offerData?.instructions && role==='buyer'){
-    document.getElementById('paymentInstructionsBox').classList.remove('hidden');
-    document.getElementById('paymentInstructionsText').textContent=offerData.instructions;
-  } else {
-    document.getElementById('paymentInstructionsBox').classList.add('hidden');
-  }
-  document.getElementById('escrowTitle').textContent=amount+' '+(offerData?.coin||'')+' held in escrow';
-  document.getElementById('escrowSub').textContent=role==='buyer'?'Will be released once you confirm payment and seller approves.':'Release funds after confirming payment receipt.';
-  goTo('orderPage');
-  // Listen to real-time chat
+  document.getElementById("orderTitle").textContent="Order Chat";
+  document.getElementById("orderIdDisplay").textContent="#"+orderDocId.slice(-6).toUpperCase();
+  document.getElementById("orderDirection").textContent=role==="buyer"?"You are buying":"You are selling";
+  document.getElementById("orderAmt").textContent=(amount||0).toFixed(4)+" "+(offerData?.coin||"");
+  document.getElementById("orderPrice").textContent=(offerData?.price||0).toLocaleString()+" "+(offerData?.currency||"");
+  document.getElementById("orderTotal").textContent=(total||0).toLocaleString()+" "+(offerData?.currency||"");
+  document.getElementById("orderMerchant").textContent=role==="buyer"?(offerData?.merchantName||"Seller"):(offerData?.merchantName||"Buyer");
+  document.getElementById("orderPayment").textContent=(offerData?.paymentMethods||[]).join(", ")||"—";
+  document.getElementById("orderStatus").textContent="Pending";
+  document.getElementById("orderStatus").className="order-status pending";
+  if(role==="buyer"){document.getElementById("countdownBox").classList.remove("hidden");startCountdown();document.getElementById("buyerActionsBar").classList.remove("hidden");document.getElementById("sellerActionsBar").classList.add("hidden");}
+  else{document.getElementById("countdownBox").classList.add("hidden");document.getElementById("sellerActionsBar").classList.remove("hidden");document.getElementById("buyerActionsBar").classList.add("hidden");}
+  if(offerData?.instructions&&role==="buyer"){document.getElementById("paymentInstructionsBox").classList.remove("hidden");document.getElementById("paymentInstructionsText").textContent=offerData.instructions;}
+  else document.getElementById("paymentInstructionsBox").classList.add("hidden");
+  document.getElementById("escrowTitle").textContent=amount+" "+(offerData?.coin||"")+" held in escrow";
+  document.getElementById("escrowSub").textContent=role==="buyer"?"Will be released once you confirm payment and seller approves.":"Release funds after confirming payment receipt.";
+  goTo("orderPage");
   subscribeToChat(orderDocId);
 }
 
 function subscribeToChat(orderDocId){
-  if(chatListener) chatListener();
-  const chatArea=document.getElementById('chatArea');
-  chatArea.innerHTML='<div class="msg system">Order started · Chat with your trading partner</div>';
-  chatListener=db.collection('p2pOrders').doc(orderDocId).collection('messages')
-    .orderBy('timestamp','asc')
-    .onSnapshot(snap=>{
-      const msgs=snap.docChanges().filter(c=>c.type==='added').map(c=>c.doc.data());
-      msgs.forEach(msg=>{
-        const isMe=msg.senderId===currentUser.uid;
-        if(msg.type==='system'){
-          chatArea.insertAdjacentHTML('beforeend',`<div class="msg system">${escapeHtml(msg.text)}</div>`);
-        } else {
-          chatArea.insertAdjacentHTML('beforeend',`<div class="msg ${isMe?'me':'them'}"><div class="msg-sender">${isMe?'You':escapeHtml(msg.senderName||'Partner')}</div>${escapeHtml(msg.text)}<div class="msg-time">${msg.timestamp?.toDate?msg.timestamp.toDate().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''}</div></div>`);
-        }
-        chatArea.scrollTop=chatArea.scrollHeight;
-      });
+  if(chatListener)chatListener();
+  const area=document.getElementById("chatArea");
+  area.innerHTML="<div class=\"msg system\">Order started · Chat with your trading partner</div>";
+  chatListener=db.collection("p2pOrders").doc(orderDocId).collection("messages").orderBy("timestamp","asc").onSnapshot(snap=>{
+    snap.docChanges().filter(c=>c.type==="added").map(c=>c.doc.data()).forEach(msg=>{
+      const isMe=msg.senderId===currentUser.uid;
+      if(msg.type==="system")area.insertAdjacentHTML("beforeend",`<div class="msg system">${escapeHtml(msg.text)}</div>`);
+      else area.insertAdjacentHTML("beforeend",`<div class="msg ${isMe?"me":"them"}"><div class="msg-sender">${isMe?"You":escapeHtml(msg.senderName||"Partner")}</div>${escapeHtml(msg.text)}<div class="msg-time">${msg.timestamp?.toDate?msg.timestamp.toDate().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}</div></div>`);
+      area.scrollTop=area.scrollHeight;
     });
-}
-
-async function sendChat(){
-  const input=document.getElementById('chatInput');
-  const text=input.value.trim();
-  if(!text||!currentOrderId) return;
-  const name=currentUser.displayName||currentUser.email.split('@')[0];
-  try{
-    await db.collection('p2pOrders').doc(currentOrderId).collection('messages').add({
-      text, senderId:currentUser.uid, senderName:name,
-      type:'chat', timestamp:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    input.value='';
-  }catch(e){ alert('Error sending message: '+e.message); }
-}
-
-async function markPaid(){
-  if(!currentOrderId) return;
-  if(!confirm('Confirm you have sent the payment?')) return;
-  await db.collection('p2pOrders').doc(currentOrderId).update({status:'paid'});
-  await db.collection('p2pOrders').doc(currentOrderId).collection('messages').add({
-    text:'✅ Buyer has marked payment as sent. Please confirm receipt.',
-    type:'system', senderId:'system', timestamp:firebase.firestore.FieldValue.serverTimestamp()
   });
-  document.getElementById('orderStatus').textContent='Paid — Awaiting Confirmation';
-  document.getElementById('orderStatus').className='order-status paid';
-  document.getElementById('buyerActionsBar').classList.add('hidden');
 }
 
-async function releaseFunds(){
-  if(!currentOrderId) return;
-  if(!confirm('Confirm you received payment and release funds to buyer?')) return;
-  await db.collection('p2pOrders').doc(currentOrderId).update({status:'completed'});
-  await db.collection('p2pOrders').doc(currentOrderId).collection('messages').add({
-    text:'✅ Seller confirmed payment. Funds released! Order completed.',
-    type:'system', senderId:'system', timestamp:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  document.getElementById('orderStatus').textContent='Completed';
-  document.getElementById('orderStatus').className='order-status completed';
-  document.getElementById('sellerActionsBar').classList.add('hidden');
-  // Credit buyer's account (demo - admin would handle this in real flow)
-  alert('Order completed! Funds have been released.');
-}
+async function sendChat(){const input=document.getElementById("chatInput"),text=input.value.trim();if(!text||!currentOrderId)return;const name=currentUser.displayName||currentUser.email.split("@")[0];try{await db.collection("p2pOrders").doc(currentOrderId).collection("messages").add({text,senderId:currentUser.uid,senderName:name,type:"chat",timestamp:firebase.firestore.FieldValue.serverTimestamp()});input.value="";}catch(e){alert(e.message);}}
+async function markPaid(){if(!currentOrderId||!confirm("Confirm you sent payment?"))return;await db.collection("p2pOrders").doc(currentOrderId).update({status:"paid"});await db.collection("p2pOrders").doc(currentOrderId).collection("messages").add({text:"✅ Buyer marked as paid. Seller please confirm.",type:"system",senderId:"system",timestamp:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById("orderStatus").textContent="Paid";document.getElementById("orderStatus").className="order-status paid";document.getElementById("buyerActionsBar").classList.add("hidden");}
+async function releaseFunds(){if(!currentOrderId||!confirm("Confirm payment received and release funds?"))return;await db.collection("p2pOrders").doc(currentOrderId).update({status:"completed"});await db.collection("p2pOrders").doc(currentOrderId).collection("messages").add({text:"✅ Seller confirmed. Funds released! Order completed.",type:"system",senderId:"system",timestamp:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById("orderStatus").textContent="Completed";document.getElementById("orderStatus").className="order-status completed";document.getElementById("sellerActionsBar").classList.add("hidden");alert("Order completed!");}
+async function disputeOrder(){if(!confirm("Open dispute? Admin will review."))return;await db.collection("p2pOrders").doc(currentOrderId).update({status:"disputed"});await db.collection("p2pOrders").doc(currentOrderId).collection("messages").add({text:"⚠️ Dispute opened. Admin notified.",type:"system",senderId:"system",timestamp:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById("orderStatus").textContent="Disputed";document.getElementById("orderStatus").className="order-status disputed";}
+async function cancelOrder(){if(!confirm("Cancel order?"))return;if(currentOrderId){await db.collection("p2pOrders").doc(currentOrderId).update({status:"cancelled"});await db.collection("p2pOrders").doc(currentOrderId).collection("messages").add({text:"❌ Order cancelled.",type:"system",senderId:"system",timestamp:firebase.firestore.FieldValue.serverTimestamp()});}document.getElementById("orderStatus").textContent="Cancelled";document.getElementById("orderStatus").className="order-status cancelled";document.getElementById("buyerActionsBar").classList.add("hidden");document.getElementById("sellerActionsBar").classList.add("hidden");}
 
-async function disputeOrder(){
-  if(!confirm('Open a dispute for this order? Admin will review.')) return;
-  await db.collection('p2pOrders').doc(currentOrderId).update({status:'disputed'});
-  await db.collection('p2pOrders').doc(currentOrderId).collection('messages').add({
-    text:'⚠️ Dispute opened. Admin has been notified and will review this order.',
-    type:'system', senderId:'system', timestamp:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  document.getElementById('orderStatus').textContent='Disputed';
-  document.getElementById('orderStatus').className='order-status disputed';
-}
-
-async function cancelOrder(){
-  if(!confirm('Cancel this order?')) return;
-  if(currentOrderId){
-    await db.collection('p2pOrders').doc(currentOrderId).update({status:'cancelled'});
-    await db.collection('p2pOrders').doc(currentOrderId).collection('messages').add({
-      text:'❌ Order cancelled.',
-      type:'system', senderId:'system', timestamp:firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-  document.getElementById('orderStatus').textContent='Cancelled';
-  document.getElementById('orderStatus').className='order-status cancelled';
-  document.getElementById('buyerActionsBar').classList.add('hidden');
-  document.getElementById('sellerActionsBar').classList.add('hidden');
-}
-
-// COUNTDOWN
 let countdownInterval;
-function startCountdown(){
-  clearInterval(countdownInterval);
-  let seconds=14*60+58;
-  const el=document.getElementById('countdownTimer');
-  countdownInterval=setInterval(()=>{ seconds--; if(seconds<=0){clearInterval(countdownInterval);seconds=0;} el.textContent=`${Math.floor(seconds/60)}:${(seconds%60).toString().padStart(2,'0')}`; },1000);
-}
+function startCountdown(){clearInterval(countdownInterval);let seconds=14*60+58;const el=document.getElementById("countdownTimer");countdownInterval=setInterval(()=>{seconds--;if(seconds<=0){clearInterval(countdownInterval);seconds=0;}el.textContent=Math.floor(seconds/60)+":"+(seconds%60).toString().padStart(2,"0");},1000);}
 
-// WITHDRAWAL
-function updateWdBalance(){
-  if(!userData) return;
-  const coin=document.getElementById('wdCoin').value;
-  document.getElementById('wdAvailable').textContent=(userData.balances[coin]||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:6});
-  document.getElementById('wdCoinLabel').textContent=coin;
-}
-function updateWdReceive(){ const val=parseFloat(document.getElementById('wdAmount').value)||0; document.getElementById('wdReceive').textContent=Math.max(val-1,0).toFixed(4)+' '+document.getElementById('wdCoin').value; }
-window.setMax=()=>{ const coin=document.getElementById('wdCoin').value; document.getElementById('wdAmount').value=(userData?.balances[coin]||0).toFixed(6); updateWdReceive(); };
-async function submitWithdrawal(){
-  const addr=document.getElementById('wdAddress').value.trim();
-  const amount=parseFloat(document.getElementById('wdAmount').value);
-  const coin=document.getElementById('wdCoin').value;
-  const bal=userData.balances[coin]||0;
-  if(!addr){alert('Enter address.');return;} if(!amount||amount<=0){alert('Enter amount.');return;} if(amount>bal){alert('Insufficient balance.');return;}
-  if(!confirm(`Withdraw ${amount} ${coin} to ${addr}?\nRequires admin approval.`)) return;
-  userData.balances[coin]-=amount;
-  if(!userData.withdrawalRequests) userData.withdrawalRequests=[];
-  userData.withdrawalRequests.push({id:Date.now().toString(),coin,amount,address:addr,status:'pending',date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),timestamp:new Date().toISOString()});
-  await addTransaction(`Withdrawal Request — ${coin}`,coin,-amount,'Pending');
-  await saveUserData(); renderAssets(); renderMyWithdrawals();
-  document.getElementById('wdAddress').value=''; document.getElementById('wdAmount').value='';
-  alert('✅ Withdrawal request submitted! Awaiting admin approval.');
-}
-function renderMyWithdrawals(){
-  if(!userData) return;
-  const reqs=(userData.withdrawalRequests||[]).slice().reverse();
-  const el=document.getElementById('myWithdrawals');
-  if(!reqs.length){el.innerHTML='<div class="empty-history">No requests yet.</div>';return;}
-  el.innerHTML=reqs.map(r=>{ const cls=r.status==='approved'?'completed':r.status==='rejected'?'rejected':'pending'; return `<div class="history-item"><div class="top-row"><span class="type">${r.amount} ${r.coin}</span><span class="amt neg">-${r.amount} ${r.coin}</span></div><div class="meta">${r.date} · ${r.address.slice(0,14)}…</div><span class="status-badge ${cls}">${r.status.toUpperCase()}</span></div>`; }).join('');
-}
+function updateWdBalance(){if(!userData)return;const coin=document.getElementById("wdCoin").value;document.getElementById("wdAvailable").textContent=(userData.balances[coin]||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:6});document.getElementById("wdCoinLabel").textContent=coin;}
+function updateWdReceive(){const val=parseFloat(document.getElementById("wdAmount").value)||0;document.getElementById("wdReceive").textContent=Math.max(val-1,0).toFixed(4)+" "+document.getElementById("wdCoin").value;}
+window.setMax=()=>{const coin=document.getElementById("wdCoin").value;document.getElementById("wdAmount").value=(userData?.balances[coin]||0).toFixed(6);updateWdReceive();};
+async function submitWithdrawal(){const addr=document.getElementById("wdAddress").value.trim(),amount=parseFloat(document.getElementById("wdAmount").value),coin=document.getElementById("wdCoin").value,bal=userData.balances[coin]||0;if(!addr){alert("Enter address.");return;}if(!amount||amount<=0){alert("Enter amount.");return;}if(amount>bal){alert("Insufficient balance.");return;}if(!confirm(`Withdraw ${amount} ${coin} to ${addr}?`))return;userData.balances[coin]-=amount;if(!userData.withdrawalRequests)userData.withdrawalRequests=[];userData.withdrawalRequests.push({id:Date.now().toString(),coin,amount,address:addr,status:"pending",date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),timestamp:new Date().toISOString()});await addTransaction(`Withdrawal — ${coin}`,coin,-amount,"Pending");await saveUserData();renderAssets();renderMyWithdrawals();document.getElementById("wdAddress").value="";document.getElementById("wdAmount").value="";alert("✅ Withdrawal submitted!");}
+function renderMyWithdrawals(){if(!userData)return;const reqs=(userData.withdrawalRequests||[]).slice().reverse();const el=document.getElementById("myWithdrawals");if(!reqs.length){el.innerHTML="<div class=\"empty-history\">No requests yet.</div>";return;}el.innerHTML=reqs.map(r=>{const cls=r.status==="approved"?"completed":r.status==="rejected"?"rejected":"pending";return `<div class="history-item"><div class="top-row"><span class="type">${r.amount} ${r.coin}</span><span class="amt neg">-${r.amount} ${r.coin}</span></div><div class="meta">${r.date} · ${r.address.slice(0,14)}…</div><span class="status-badge ${cls}">${r.status.toUpperCase()}</span></div>`;}).join("");}
 
-// DEPOSIT
-window.openDepositAddress=(coin)=>{
-  currentDepositCoin=coin;
-  const info=depositInfo[coin];
-  document.getElementById('depTitleCoin').textContent=coin;
-  document.getElementById('depAddress').textContent=info.address;
-  document.getElementById('depNetworkNote').textContent=info.network;
-  document.getElementById('depMinRow').innerHTML=`<span>Minimum</span><span>${info.min}</span>`;
-  document.getElementById('depArrivalRow').innerHTML=`<span>Arrival</span><span>${info.arrival}</span>`;
-  const qrBox=document.getElementById('qrCodeDisplay'); qrBox.innerHTML='';
-  new QRCode(qrBox,{text:info.address,width:160,height:160,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
-  goTo('depositAddressPage'); renderMyDepositRequests();
-};
-window.copyDepAddress=()=>{ navigator.clipboard?.writeText(document.getElementById('depAddress').textContent); alert('Address copied!'); };
-async function submitDepositConfirmation(){
-  const txHash=document.getElementById('txHashInput').value.trim();
-  const amount=parseFloat(document.getElementById('txAmountInput').value);
-  if(!txHash){alert('Enter transaction hash.');return;} if(!amount||amount<=0){alert('Enter amount.');return;}
-  if(!userData.depositRequests) userData.depositRequests=[];
-  userData.depositRequests.push({id:Date.now().toString(),coin:currentDepositCoin,amount,txHash,address:depositInfo[currentDepositCoin].address,status:'pending',date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),timestamp:new Date().toISOString()});
-  await saveUserData(); renderMyDepositRequests();
-  document.getElementById('txHashInput').value=''; document.getElementById('txAmountInput').value='';
-  alert('✅ Deposit submitted for verification! Admin will credit your account after confirming.');
-}
-function renderMyDepositRequests(){
-  if(!userData) return;
-  const reqs=(userData.depositRequests||[]).slice().reverse();
-  const el=document.getElementById('myDepositRequests');
-  if(!reqs.length){el.innerHTML='<div class="empty-history" style="padding:20px 0;">No deposit confirmations yet.</div>';return;}
-  el.innerHTML=reqs.map(r=>{ const cls=r.status==='approved'?'completed':r.status==='rejected'?'rejected':'pending'; return `<div class="history-item"><div class="top-row"><span class="type">${r.amount} ${r.coin}</span><span class="amt pos">+${r.amount} ${r.coin}</span></div><div class="meta">${r.date}</div><div class="tx-hash-box">TX: ${r.txHash}</div><span class="status-badge ${cls}">${r.status.toUpperCase()}</span></div>`; }).join('');
-}
+window.openDepositAddress=(coin)=>{currentDepositCoin=coin;const info=depositInfo[coin];document.getElementById("depTitleCoin").textContent=coin;document.getElementById("depAddress").textContent=info.address;document.getElementById("depNetworkNote").textContent=info.network;document.getElementById("depMinRow").innerHTML=`<span>Minimum</span><span>${info.min}</span>`;document.getElementById("depArrivalRow").innerHTML=`<span>Arrival</span><span>${info.arrival}</span>`;const qrBox=document.getElementById("qrCodeDisplay");qrBox.innerHTML="";new QRCode(qrBox,{text:info.address,width:160,height:160,colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.M});goTo("depositAddressPage");renderMyDepositRequests();};
+window.copyDepAddress=()=>{navigator.clipboard?.writeText(document.getElementById("depAddress").textContent);alert("Address copied!");};
+async function submitDepositConfirmation(){const txHash=document.getElementById("txHashInput").value.trim(),amount=parseFloat(document.getElementById("txAmountInput").value);if(!txHash){alert("Enter TX hash.");return;}if(!amount||amount<=0){alert("Enter amount.");return;}if(!userData.depositRequests)userData.depositRequests=[];userData.depositRequests.push({id:Date.now().toString(),coin:currentDepositCoin,amount,txHash,address:depositInfo[currentDepositCoin].address,status:"pending",date:new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}),timestamp:new Date().toISOString()});await saveUserData();renderMyDepositRequests();document.getElementById("txHashInput").value="";document.getElementById("txAmountInput").value="";alert("✅ Deposit submitted for verification!");}
+function renderMyDepositRequests(){if(!userData)return;const reqs=(userData.depositRequests||[]).slice().reverse();const el=document.getElementById("myDepositRequests");if(!reqs.length){el.innerHTML="<div class=\"empty-history\" style=\"padding:20px 0\">No deposit confirmations yet.</div>";return;}el.innerHTML=reqs.map(r=>{const cls=r.status==="approved"?"completed":r.status==="rejected"?"rejected":"pending";return `<div class="history-item"><div class="top-row"><span class="type">${r.amount} ${r.coin}</span><span class="amt pos">+${r.amount} ${r.coin}</span></div><div class="meta">${r.date}</div><div class="tx-hash-box">TX: ${r.txHash}</div><span class="status-badge ${cls}">${r.status.toUpperCase()}</span></div>`;}).join("");}
 
-// KYC
-function renderKycPage(){
-  const kyc=userData?.kyc||{};
-  const el=document.getElementById('kycStatus');
-  if(kyc.status==='verified') el.innerHTML='<div style="color:var(--green);font-weight:700;">✅ Your identity is verified.</div>';
-  else if(kyc.status==='pending') el.innerHTML='<div style="color:var(--accent);font-weight:700;">🔄 Under review.</div>';
-  else el.innerHTML='<div style="color:var(--ink-dim);">Submit your details to verify your identity. Required for P2P offers and withdrawals.</div>';
-  document.getElementById('kycName').value=kyc.name||'';
-  document.getElementById('kycCountry').value=kyc.country||'';
-  document.getElementById('kycId').value=kyc.idNumber||'';
-  document.getElementById('kycDob').value=kyc.dob||'';
-  const disabled=kyc.status==='verified';
-  ['kycName','kycCountry','kycId','kycDob'].forEach(id=>document.getElementById(id).disabled=disabled);
-  document.getElementById('kycSubmitBtn').disabled=disabled;
-}
-async function submitKyc(){
-  const name=document.getElementById('kycName').value.trim();
-  const country=document.getElementById('kycCountry').value.trim();
-  const idNum=document.getElementById('kycId').value.trim();
-  const dob=document.getElementById('kycDob').value;
-  if(!name||!country||!idNum||!dob){alert('Please fill in all fields.');return;}
-  userData.kyc={status:'pending',name,country,idNumber:idNum,dob,submittedAt:new Date().toISOString()};
-  await saveUserData(); renderKycPage(); renderProfile();
-  alert('KYC submitted! Under review.');
-}
-function changePassword(){ if(!confirm('Send password reset link to '+currentUser.email+'?'))return; auth.sendPasswordResetEmail(currentUser.email).then(()=>alert('Reset email sent!')).catch(e=>alert(e.message)); }
-
-function escapeHtml(str){ const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+function renderKycPage(){const kyc=userData?.kyc||{};const el=document.getElementById("kycStatus");if(kyc.status==="verified")el.innerHTML="<div style=\"color:var(--green);font-weight:700\">✅ Your identity is verified.</div>";else if(kyc.status==="pending")el.innerHTML="<div style=\"color:var(--accent);font-weight:700\">🔄 Under review.</div>";else el.innerHTML="<div style=\"color:var(--ink-dim)\">Submit details to verify identity. Required for P2P & withdrawals.</div>";document.getElementById("kycName").value=kyc.name||"";document.getElementById("kycCountry").value=kyc.country||"";document.getElementById("kycId").value=kyc.idNumber||"";document.getElementById("kycDob").value=kyc.dob||"";const disabled=kyc.status==="verified";["kycName","kycCountry","kycId","kycDob"].forEach(id=>document.getElementById(id).disabled=disabled);document.getElementById("kycSubmitBtn").disabled=disabled;}
+async function submitKyc(){const name=document.getElementById("kycName").value.trim(),country=document.getElementById("kycCountry").value.trim(),idNum=document.getElementById("kycId").value.trim(),dob=document.getElementById("kycDob").value;if(!name||!country||!idNum||!dob){alert("Fill all fields.");return;}userData.kyc={status:"pending",name,country,idNumber:idNum,dob,submittedAt:new Date().toISOString()};await saveUserData();renderKycPage();renderProfile();alert("KYC submitted!");}
+function changePassword(){if(!confirm("Send reset link to "+currentUser.email+"?"))return;auth.sendPasswordResetEmail(currentUser.email).then(()=>alert("Reset email sent!")).catch(e=>alert(e.message));}
+function escapeHtml(str){const d=document.createElement("div");d.textContent=str;return d.innerHTML;}
 </script>
 </body>
 </html>
